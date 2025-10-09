@@ -1,0 +1,8 @@
+{
+	"name": "Noted — by maw1a",
+	"title": "Noted",
+	"homepage": "https://noted.maw1a.com/",
+	"description": "Simple notes app based on Git. Write in markdown and web components. Save, share, collaborate across notes repositories. Because Notion sucks.",
+	"version": "0.1.0",
+	"author": "Ahmed Mawia <ahmedmawia.dev@gmail.com>"
+}

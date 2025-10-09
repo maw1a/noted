@@ -1,0 +1,7 @@
+{
+	"FAILED_DIALOG": "Failed to open dialog",
+	"WARN_NO_GIT_INIT": "Failed to initialize git repository",
+	"FAILED_CONFIG_CHECK": "Failed to check config file",
+	"WARN_NO_CONFIG_CREATE": "Failed to create config file. Opening notes repo.",
+	"WARN_NO_CONFIG_WRITE": "Failed to write config file. Opening notes repo."
+}
