@@ -42,6 +42,10 @@ type Editor struct {
 	streamChan chan StreamEvent
 }
 
+type EditorState struct {
+	rootPath string
+}
+
 func NewEditorService() *Editor {
 	return &Editor{
 		ctx:     context.Background(),
@@ -63,7 +67,7 @@ func NewEditorService() *Editor {
 // - c. Clone Repo
 // - d. Open Editor
 
-func (e *Editor) Create() (string, error) {
+func (e *Editor) CreateNewRepo() (string, error) {
 	// a. Select directory
 	dir, err := selectDirectory()
 
@@ -94,6 +98,12 @@ func (e *Editor) Create() (string, error) {
 	e.rootPath = dir
 
 	return dir, err
+}
+
+func (e *Editor) GetEditorState() EditorState {
+	return EditorState{
+		rootPath: e.rootPath,
+	}
 }
 
 // selectDirectory opens a directory selection dialog and returns the selected path

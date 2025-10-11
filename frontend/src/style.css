@@ -23,6 +23,55 @@ body {
 	@apply text-left!;
 }
 
+@theme {
+	--color-text: var(--color-neutral-200);
+	--color-text-muted: var(--color-neutral-400);
+
+	--color-surface-muted: var(--color-neutral-700);
+	--color-surface: var(--color-neutral-800);
+	--color-dark: var(--color-neutral-900);
+
+	--color-tint: color-mix(in oklab, var(--color-surface) 75%, transparent);
+	--color-dark-tint: color-mix(in oklab, var(--color-dark) 75%, transparent);
+
+	--text-mini: 0.75rem; /* 12px */
+	--text-mini--line-height: 1rem; /* 16px */
+
+	--text-display: 0.875rem; /* 14px */
+	--text-display--line-height: 1.125rem; /* 18px */
+
+	--text-edit: 1rem; /* 16px */
+	--text-edit--line-height: 1.5rem; /* 24px */
+}
+
+@layer base {
+	[tooltip-title] {
+		@apply relative;
+
+		&::after {
+			content: attr(tooltip-title);
+			@apply pointer-events-none select-none opacity-0 absolute left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-surface px-2 py-1 text-mini text-text shadow-lg;
+			z-index: 10;
+		}
+
+		&:hover::after {
+			@apply opacity-100 delay-500 duration-100;
+		}
+
+		&:not([tooltip-position="bottom"]) {
+			&:hover::after {
+				@apply -top-7;
+			}
+		}
+	}
+
+	[tooltip-position="bottom"] {
+		&:hover::after {
+			@apply -bottom-7;
+		}
+	}
+}
+
 @layer utilities {
 	@keyframes loader-dots {
 		0% {

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import app from "../../utils/constants/app";
 import { Icon } from "../../utils/icon";
 
-import { Create } from "../../../bindings/noted/editor.js";
+import { CreateNewRepo } from "../../../bindings/noted/editor.js";
 
 import logoIcon from "../../assets/images/logo-icon.svg";
 
@@ -18,7 +18,7 @@ export const Repo = () => {
 	const createNew = async () => {
 		try {
 			setAction("new");
-			const dir = await Create();
+			const dir = await CreateNewRepo();
 			console.log({ dir });
 		} catch (err) {
 			console.log({ err });

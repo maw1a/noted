@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes, ComponentProps, h } from "preact";
+import { ButtonHTMLAttributes, ComponentChildren, h } from "preact";
 import { cn } from "../../utils/cn";
+import { Icon, IconName } from "../../utils/icon";
 
 export const Button = ({
 	children,
@@ -17,6 +18,41 @@ export const Button = ({
 			{...props}
 		>
 			{children}
+		</button>
+	);
+};
+
+export const IconButton = ({
+	class: classString,
+	className,
+	variant = "default",
+	...props
+}: Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+	variant?: "default" | "ghost";
+} & ({ icon: IconName } | { children: ComponentChildren })) => {
+	return (
+		<button
+			class={cn(
+				"p-2 text-display rounded-lg transition-colors",
+				{
+					default: "bg-transparent hover:bg-surface",
+					ghost: "bg-transparent hover:bg-dark-tint",
+				}[variant],
+				classString,
+				className,
+			)}
+			{...props}
+		>
+			{"children" in props ? (
+				props.children
+			) : (
+				<Icon
+					name={props.icon}
+					size={16}
+					stroke-width={2}
+					class="transition-colors"
+				/>
+			)}
 		</button>
 	);
 };

@@ -5,7 +5,6 @@ import { Toaster } from "./components/ui/sonner";
 
 import { Repo } from "./components/pages/repo";
 import { Editor } from "./components/pages/editor";
-// import { PollStream, PollTree, StartScan } from "../wailsjs/go/main/App";
 
 export function App() {
 	return (

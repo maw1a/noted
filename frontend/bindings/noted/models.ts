@@ -9,6 +9,23 @@ import { Create as $Create } from "@wailsio/runtime";
 // @ts-ignore: Unused imports
 import * as time$0 from "../time/models.js";
 
+export class EditorState {
+
+    /** Creates a new EditorState instance. */
+    constructor($$source: Partial<EditorState> = {}) {
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new EditorState instance from a string or object.
+     */
+    static createFrom($$source: any = {}): EditorState {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new EditorState($$parsedSource as Partial<EditorState>);
+    }
+}
+
 /**
  * Node represents a directory tree node.
  * Children are only populated for directories.

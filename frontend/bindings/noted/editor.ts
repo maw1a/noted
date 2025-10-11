@@ -9,19 +9,25 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
-export function Create(): $CancellablePromise<string> {
-    return $Call.ByID(3167425695);
+export function CreateNewRepo(): $CancellablePromise<string> {
+    return $Call.ByID(3072097127);
+}
+
+export function GetEditorState(): $CancellablePromise<$models.EditorState> {
+    return $Call.ByID(2140924809).then(($result: any) => {
+        return $$createType0($result);
+    });
 }
 
 export function PollStream(max: number): $CancellablePromise<$models.StreamEvent[]> {
     return $Call.ByID(1655857422, max).then(($result: any) => {
-        return $$createType1($result);
+        return $$createType2($result);
     });
 }
 
 export function PollTree(): $CancellablePromise<$models.Node | null> {
     return $Call.ByID(1783588946).then(($result: any) => {
-        return $$createType3($result);
+        return $$createType4($result);
     });
 }
 
@@ -38,7 +44,8 @@ export function StopScan(): $CancellablePromise<void> {
 }
 
 // Private type creation functions
-const $$createType0 = $models.StreamEvent.createFrom;
-const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = $models.Node.createFrom;
-const $$createType3 = $Create.Nullable($$createType2);
+const $$createType0 = $models.EditorState.createFrom;
+const $$createType1 = $models.StreamEvent.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = $models.Node.createFrom;
+const $$createType4 = $Create.Nullable($$createType3);

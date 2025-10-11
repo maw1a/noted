@@ -7,6 +7,7 @@ export {
 };
 
 export {
+    EditorState,
     Node,
     StreamEvent
 } from "./models.js";
