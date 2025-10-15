@@ -7,12 +7,8 @@
 }
 
 body {
-	@apply m-0;
+	@apply m-0 h-screen w-screen;
 	font-family: "Geist Mono Variable", monospace;
-}
-
-#app {
-	@apply h-screen w-screen;
 }
 
 .toaster .toast {
@@ -30,6 +26,8 @@ body {
 	--color-surface-muted: var(--color-neutral-700);
 	--color-surface: var(--color-neutral-800);
 	--color-dark: var(--color-neutral-900);
+
+	--color-destructive: var(--color-red-600);
 
 	--color-tint: color-mix(in oklab, var(--color-surface) 75%, transparent);
 	--color-dark-tint: color-mix(in oklab, var(--color-dark) 75%, transparent);
@@ -55,7 +53,7 @@ body {
 		}
 
 		&:hover::after {
-			@apply opacity-100 delay-500 duration-100;
+			@apply opacity-100 delay-1000 duration-100;
 		}
 
 		&:not([tooltip-position="bottom"]) {
@@ -69,6 +67,16 @@ body {
 		&:hover::after {
 			@apply -bottom-7;
 		}
+	}
+
+	dialog::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(2px);
+	}
+
+	dialog[open] {
+		padding: 0; /* remove default dialog padding */
+		border: none;
 	}
 }
 

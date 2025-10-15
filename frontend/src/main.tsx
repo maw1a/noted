@@ -1,7 +1,10 @@
-import { render } from "preact";
+import React from "react";
+import { createRoot } from "react-dom/client";
 import { App } from "./app";
 
 import "@fontsource-variable/geist-mono";
 import "./style.css";
 
-render(<App />, document.getElementById("app")!);
+const container = document.body;
+const root = createRoot(container);
+root.render(<App />);

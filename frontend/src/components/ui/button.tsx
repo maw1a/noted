@@ -1,46 +1,52 @@
-import { ButtonHTMLAttributes, ComponentChildren, h } from "preact";
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
-import { Icon, IconName } from "../../utils/icon";
+import { Icon, IconName } from "../icon";
 
-export const Button = ({
-	children,
-	class: classString,
-	className,
-	...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) => {
+export const buttonVariants = cva(
+	"p-2 text-display rounded-lg transition-colors",
+	{
+		variants: {
+			variant: {
+				default: "bg-transparent hover:bg-surface-muted",
+				ghost: "bg-transparent hover:bg-dark-tint",
+			},
+		},
+		defaultVariants: {
+			variant: "default",
+		},
+	},
+);
+
+export const Button = React.forwardRef<
+	HTMLButtonElement,
+	ButtonHTMLAttributes<HTMLButtonElement> & {
+		variant?: "default" | "ghost";
+	}
+>(({ children, className, variant = "default", ...props }, ref) => {
 	return (
 		<button
-			class={cn(
-				"rounded-lg flex justify-start items-center gap-2 bg-neutral-800 text-neutral-200 border border-neutral-800 shadow-sm hover:bg-neutral-700 disabled:bg-neutral-700 disabled:text-neutral-400 px-3 h-9 text-sm cursor-pointer disabled:cursor-not-allowed [&_svg]:text-neutral-400 hover:[&_svg]:text-neutral-200 disabled:[&_svg]:text-neutral-400 transition-colors",
-				classString,
-				className,
-			)}
+			ref={ref}
+			className={cn(buttonVariants({ variant }), className)}
 			{...props}
 		>
 			{children}
 		</button>
 	);
-};
+});
 
-export const IconButton = ({
-	class: classString,
-	className,
-	variant = "default",
-	...props
-}: Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
-	variant?: "default" | "ghost";
-} & ({ icon: IconName } | { children: ComponentChildren })) => {
+Button.displayName = "Button";
+
+export const IconButton = React.forwardRef<
+	HTMLButtonElement,
+	Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+		variant?: "default" | "ghost";
+	} & ({ icon: IconName } | { children: ReactNode })
+>(({ className, variant = "default", ...props }, ref) => {
 	return (
 		<button
-			class={cn(
-				"p-2 text-display rounded-lg transition-colors",
-				{
-					default: "bg-transparent hover:bg-surface",
-					ghost: "bg-transparent hover:bg-dark-tint",
-				}[variant],
-				classString,
-				className,
-			)}
+			ref={ref}
+			className={cn(buttonVariants({ variant }), className)}
 			{...props}
 		>
 			{"children" in props ? (
@@ -49,10 +55,12 @@ export const IconButton = ({
 				<Icon
 					name={props.icon}
 					size={16}
-					stroke-width={2}
-					class="transition-colors"
+					strokeWidth={2}
+					className="transition-colors"
 				/>
 			)}
 		</button>
 	);
-};
+});
+
+IconButton.displayName = "IconButton";

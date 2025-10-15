@@ -7,7 +7,9 @@ export {
 };
 
 export {
+    Config,
     EditorState,
     Node,
+    Notespace,
     StreamEvent
 } from "./models.js";

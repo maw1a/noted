@@ -26,6 +26,11 @@ type Config struct {
 	Author      string            `json:"author,omitempty"`
 }
 
+type Notespace struct {
+	Config *Config `json:"config"`
+	Path   string  `json:"path"`
+}
+
 type Editor struct {
 	ctx context.Context
 
@@ -106,6 +111,55 @@ func (e *Editor) GetEditorState() EditorState {
 	}
 }
 
+func (e *Editor) GetCurrentNotespace() Notespace {
+	config := getConfig(e.rootPath)
+	return Notespace{
+		Config: config,
+		Path:   e.rootPath,
+	}
+}
+
+func (e *Editor) GetNotespaceFromPaths(paths []string) []Notespace {
+	var results []Notespace
+	resultsChannel := make(chan Notespace)
+	var wg sync.WaitGroup
+
+	for _, path := range paths {
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+			config := getConfig(path)
+			resultsChannel <- Notespace{
+				Config: config,
+				Path:   path,
+			}
+		}()
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultsChannel)
+	}()
+
+	for result := range resultsChannel {
+		results = append(results, result)
+	}
+
+	return results
+}
+
+func getConfig(path string) *Config {
+	configPath := filepath.Join(path, CONFIG_PATH)
+	if data, err := os.ReadFile(configPath); err == nil {
+		var config *Config
+		if err := json.Unmarshal(data, config); err == nil {
+			return config
+		}
+	}
+	return nil
+}
+
 // selectDirectory opens a directory selection dialog and returns the selected path
 func selectDirectory() (string, error) {
 	home := os.Getenv("HOME")
@@ -184,26 +238,8 @@ func createNoteRepo(dir string) (bool, []error) {
 
 func createEditor(path string) *application.WebviewWindow {
 	app := application.Get()
-	// Default window title fallback: use root directory name
-	rootDir := ""
-	if path != "" {
-		rootDir = filepath.Base(path)
-	} else {
-		rootDir, _ = os.Getwd()
-		rootDir = filepath.Base(rootDir)
-	}
-	windowTitle := rootDir
 
-	// Try to read config file for custom title
-	configPath := filepath.Join(path, CONFIG_PATH)
-	if data, err := os.ReadFile(configPath); err == nil {
-		var config Config
-		if err := json.Unmarshal(data, &config); err == nil && config.Name != "" {
-			windowTitle = config.Name
-		}
-	}
-
-	window := EditorWindow(app, windowTitle)
+	window := EditorWindow(app, path)
 
 	window.Center()
 

@@ -1,36 +1,67 @@
-import { h } from "preact";
-import { IconButton } from "../../ui/button";
-import { TabList } from "./tablist";
-import { useEffect } from "preact/hooks";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { StoreProvider, useStore } from "../../store";
+import { Sidebar } from "./sidebar";
+import { Textarea } from "./textarea";
+import { NotespaceService } from "../../../services/notespace";
+import { useLocation } from "react-router-dom";
+import { toast } from "sonner";
+import { CommandPalette } from "../../dialogs/command-palette";
+
+const MainContent = () => {
+	const [state, setState] = useStore();
+	const location = useLocation();
+
+	const setLoading = useCallback(
+		(loading: boolean) => setState("loading", loading),
+		[setState],
+	);
+
+	const notespace = useMemo(() => {
+		const searchParams = new URLSearchParams(location.search);
+		const root = searchParams.get("root");
+		return root ? new NotespaceService(root) : undefined;
+	}, [location]);
+
+	async function setupEditor() {
+		if (!notespace) return;
+		try {
+			setLoading(true);
+			const { config, path } = await notespace.getCurrentNotespace();
+			const notespaces = await notespace.getRecentNotespaces();
+			setState({ config, root: path, notespaces });
+			toast.success(
+				`${config?.name || path.split("/").pop()} notespace ready.`,
+			);
+		} catch (e) {
+			const error = e as Error;
+			console.log({ error });
+			toast.error("Failed to load notespace.", {
+				description: JSON.stringify(error, null, 2),
+			});
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	useEffect(() => {
+		setupEditor();
+	}, []);
+
+	return (
+		<div className="flex flex-col h-full items-stretch w-full">
+			<div className="flex-1 w-full flex gap-4 p-0">
+				<Sidebar />
+				<Textarea />
+			</div>
+		</div>
+	);
+};
 
 export const Editor = () => {
 	return (
-		<div class="flex flex-col h-full items-stretch w-full">
-			<div class="flex-1 w-full flex gap-4 p-0">
-				<aside class="flex flex-col h-full w-2xs py-4 text-text bg-dark-tint rounded-3xl text-display gap-y-4">
-					<div className="flex w-full justify-end px-4">
-						<IconButton
-							tooltip-title="Close Sidebar"
-							tooltip-position="bottom"
-							icon="PanelLeft"
-						/>
-					</div>
-					<TabList defaultValue="files" />
-				</aside>
-				<main class="text-neutral-200 select-none flex-1 flex flex-col items-center justify-between gap-4 pt-4">
-					<header class="w-full flex justify-between items-center">
-						<div />
-						<div></div>
-						<div class="flex gap-4 items-center justify-between">
-							<IconButton
-								tooltip-title={`Search in ${""}`}
-								tooltip-position="bottom"
-								icon="PanelLeft"
-							/>
-						</div>
-					</header>
-				</main>
-			</div>
-		</div>
+		<StoreProvider>
+			<MainContent />
+			<CommandPalette />
+		</StoreProvider>
 	);
 };

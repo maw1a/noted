@@ -1,8 +1,7 @@
-import { ComponentChildren, h, Fragment } from "preact";
-import { useState } from "preact/hooks";
+import React, { useState, ReactNode } from "react";
 
 import { IconButton } from "../../ui/button";
-import type { IconName } from "../../../utils/icon";
+import type { IconName } from "../../icon";
 import { cn } from "../../../utils/cn";
 import { withTooltip } from "../../ui/tooltip";
 
@@ -20,10 +19,10 @@ export const TabButton = withTooltip<TabButtonProps>(
 			<IconButton
 				{...props}
 				tooltip-position="bottom"
-				class={cn(
+				className={cn(
 					"text-text-muted hover:[&_svg]:text-text",
 					value === id
-						? "[&_svg]:text-text bg-surface"
+						? "[&_svg]:text-text bg-surface-muted"
 						: "[&_svg]:text-text-muted",
 				)}
 				icon={icon}
@@ -35,7 +34,7 @@ export const TabButton = withTooltip<TabButtonProps>(
 	},
 );
 
-const Content: Record<string, ComponentChildren> = {
+const Content: Record<string, ReactNode> = {
 	files: <div>Files</div>,
 	grep: <div>Grep</div>,
 	saved: <div>Saved</div>,
@@ -76,7 +75,7 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 					handler={setValue}
 				/>
 			</div>
-			<div class="flex-1 w-full">{Content[value]}</div>
+			<div className="flex-1 w-full">{Content[value]}</div>
 		</>
 	);
 };

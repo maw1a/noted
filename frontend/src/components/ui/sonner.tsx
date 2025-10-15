@@ -1,5 +1,5 @@
 import { Toaster as Sonner, ToasterProps } from "sonner";
-import { Icon } from "../../utils/icon";
+import { Icon } from "../icon";
 import { Loader } from "./loader";
 
 const Toaster = ({ ...props }: ToasterProps) => {
@@ -7,11 +7,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
 		<Sonner
 			theme={"dark"}
 			className="toaster group"
-			style={{
-				"--normal-bg": "var(--color-neutral-900)",
-				"--normal-text": "var(--color-neutral-200)",
-				"--normal-border": "var(--color-neutral-800)",
-			}}
+			style={
+				{
+					"--normal-bg": "var(--color-neutral-900)",
+					"--normal-text": "var(--color-neutral-200)",
+					"--normal-border": "var(--color-neutral-800)",
+				} as React.CSSProperties
+			}
 			icons={{
 				success: <Icon size={16} name="CircleCheckBig" />,
 				info: <Icon size={16} name="Info" />,

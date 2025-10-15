@@ -9,6 +9,39 @@ import { Create as $Create } from "@wailsio/runtime";
 // @ts-ignore: Unused imports
 import * as time$0 from "../time/models.js";
 
+export class Config {
+    "name": string;
+    "description"?: string;
+    "repository"?: string;
+    "homepage"?: string;
+    "registry": { [_: string]: string };
+    "author"?: string;
+
+    /** Creates a new Config instance. */
+    constructor($$source: Partial<Config> = {}) {
+        if (!("name" in $$source)) {
+            this["name"] = "";
+        }
+        if (!("registry" in $$source)) {
+            this["registry"] = {};
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new Config instance from a string or object.
+     */
+    static createFrom($$source: any = {}): Config {
+        const $$createField4_0 = $$createType0;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("registry" in $$parsedSource) {
+            $$parsedSource["registry"] = $$createField4_0($$parsedSource["registry"]);
+        }
+        return new Config($$parsedSource as Partial<Config>);
+    }
+}
+
 export class EditorState {
 
     /** Creates a new EditorState instance. */
@@ -72,12 +105,41 @@ export class Node {
      * Creates a new Node instance from a string or object.
      */
     static createFrom($$source: any = {}): Node {
-        const $$createField5_0 = $$createType1;
+        const $$createField5_0 = $$createType2;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("children" in $$parsedSource) {
             $$parsedSource["children"] = $$createField5_0($$parsedSource["children"]);
         }
         return new Node($$parsedSource as Partial<Node>);
+    }
+}
+
+export class Notespace {
+    "config": Config | null;
+    "path": string;
+
+    /** Creates a new Notespace instance. */
+    constructor($$source: Partial<Notespace> = {}) {
+        if (!("config" in $$source)) {
+            this["config"] = null;
+        }
+        if (!("path" in $$source)) {
+            this["path"] = "";
+        }
+
+        Object.assign(this, $$source);
+    }
+
+    /**
+     * Creates a new Notespace instance from a string or object.
+     */
+    static createFrom($$source: any = {}): Notespace {
+        const $$createField0_0 = $$createType4;
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        if ("config" in $$parsedSource) {
+            $$parsedSource["config"] = $$createField0_0($$parsedSource["config"]);
+        }
+        return new Notespace($$parsedSource as Partial<Notespace>);
     }
 }
 
@@ -105,7 +167,7 @@ export class StreamEvent {
      * Creates a new StreamEvent instance from a string or object.
      */
     static createFrom($$source: any = {}): StreamEvent {
-        const $$createField1_0 = $$createType2;
+        const $$createField1_0 = $$createType5;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("node" in $$parsedSource) {
             $$parsedSource["node"] = $$createField1_0($$parsedSource["node"]);
@@ -115,6 +177,9 @@ export class StreamEvent {
 }
 
 // Private type creation functions
-const $$createType0 = Node.createFrom;
-const $$createType1 = $Create.Array($$createType0);
-const $$createType2 = $Create.Nullable($$createType0);
+const $$createType0 = $Create.Map($Create.Any, $Create.Any);
+const $$createType1 = Node.createFrom;
+const $$createType2 = $Create.Array($$createType1);
+const $$createType3 = Config.createFrom;
+const $$createType4 = $Create.Nullable($$createType3);
+const $$createType5 = $Create.Nullable($$createType1);

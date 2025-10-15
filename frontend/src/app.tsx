@@ -1,5 +1,5 @@
-import { h, Fragment } from "preact";
-import { ErrorBoundary, LocationProvider, Route, Router } from "preact-iso";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { Toaster } from "./components/ui/sonner";
 
@@ -9,14 +9,12 @@ import { Editor } from "./components/pages/editor";
 export function App() {
 	return (
 		<>
-			<LocationProvider>
-				<ErrorBoundary>
-					<Router>
-						<Route path="/" component={Repo} />
-						<Route path="/editor" component={Editor} />
-					</Router>
-				</ErrorBoundary>
-			</LocationProvider>
+			<Router>
+				<Routes>
+					<Route path="/" element={<Repo />} />
+					<Route path="/editor" element={<Editor />} />
+				</Routes>
+			</Router>
 			<Toaster />
 		</>
 	);
