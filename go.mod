@@ -2,7 +2,10 @@ module noted
 
 go 1.24.0
 
-require github.com/wailsapp/wails/v3 v3.0.0-alpha.34
+require (
+	github.com/leaanthony/u v1.1.1
+	github.com/wailsapp/wails/v3 v3.0.0-alpha.34
+)
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
@@ -25,7 +28,6 @@ require (
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/leaanthony/go-ansi-parser v1.6.1 // indirect
-	github.com/leaanthony/u v1.1.1 // indirect
 	github.com/lmittmann/tint v1.0.7 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

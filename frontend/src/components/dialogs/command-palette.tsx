@@ -1,5 +1,4 @@
-import React from "react";
-
+import { ReactNode, useMemo } from "react";
 import { useStore } from "../store";
 import {
 	CommandDialog,
@@ -8,19 +7,13 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-	CommandSeparator,
 	CommandShortcut,
 } from "../ui/command";
-import {
-	Calendar,
-	Smile,
-	Calculator,
-	User,
-	CreditCard,
-	Settings,
-} from "lucide-react";
+import { commandList } from "../../command";
+import { KeyIcon } from "../icon";
+import { useMatch } from "react-router-dom";
 
-export function CommandPalette() {
+export function CommandPalette({ children }: { children: ReactNode }) {
 	const [state, setState] = useStore();
 
 	const open = state.dialog === "cmd-palette";
@@ -28,42 +21,27 @@ export function CommandPalette() {
 		setState("dialog", value ? "cmd-palette" : null);
 	};
 
+	const commands = useMemo(
+		() => commandList.filter((cmd) => cmd.isAvailable && cmd.isVisible),
+		[],
+	);
+
 	return (
-		<CommandDialog open={open} onOpenChange={setOpen}>
-			<CommandInput placeholder="Type a command or search..." />
+		<CommandDialog modal trigger={children} open={open} onOpenChange={setOpen}>
+			<CommandInput placeholder="Run a command..." />
+			<CommandEmpty>No matches</CommandEmpty>
 			<CommandList>
-				<CommandEmpty>No results found.</CommandEmpty>
-				<CommandGroup heading="Suggestions">
-					<CommandItem>
-						<Calendar />
-						<span>Calendar</span>
-					</CommandItem>
-					<CommandItem>
-						<Smile />
-						<span>Search Emoji</span>
-					</CommandItem>
-					<CommandItem>
-						<Calculator />
-						<span>Calculator</span>
-					</CommandItem>
-				</CommandGroup>
-				<CommandSeparator />
-				<CommandGroup heading="Settings">
-					<CommandItem>
-						<User />
-						<span>Profile</span>
-						<CommandShortcut>⌘P</CommandShortcut>
-					</CommandItem>
-					<CommandItem>
-						<CreditCard />
-						<span>Billing</span>
-						<CommandShortcut>⌘B</CommandShortcut>
-					</CommandItem>
-					<CommandItem>
-						<Settings />
-						<span>Settings</span>
-						<CommandShortcut>⌘S</CommandShortcut>
-					</CommandItem>
+				<CommandGroup>
+					{commands.map((command) => (
+						<CommandItem key={command.id}>
+							<span>{command.label}</span>
+							<CommandShortcut>
+								{command.shortcut.map((key) => (
+									<KeyIcon key={key} name={key} />
+								))}
+							</CommandShortcut>
+						</CommandItem>
+					))}
 				</CommandGroup>
 			</CommandList>
 		</CommandDialog>

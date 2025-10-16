@@ -151,10 +151,11 @@ func (e *Editor) GetNotespaceFromPaths(paths []string) []Notespace {
 
 func getConfig(path string) *Config {
 	configPath := filepath.Join(path, CONFIG_PATH)
+
 	if data, err := os.ReadFile(configPath); err == nil {
-		var config *Config
-		if err := json.Unmarshal(data, config); err == nil {
-			return config
+		config := Config{}
+		if err := json.Unmarshal(data, &config); err == nil {
+			return &config
 		}
 	}
 	return nil

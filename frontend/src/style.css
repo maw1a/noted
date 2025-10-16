@@ -6,17 +6,8 @@
 	text-align: center;
 }
 
-body {
-	@apply m-0 h-screen w-screen;
-	font-family: "Geist Mono Variable", monospace;
-}
-
-.toaster .toast {
-	@apply py-2! hover:py-2! font-mono!;
-}
-
-.toaster .title {
-	@apply text-left!;
+:focus-visible {
+	@apply outline-none;
 }
 
 @theme {
@@ -32,17 +23,36 @@ body {
 	--color-tint: color-mix(in oklab, var(--color-surface) 75%, transparent);
 	--color-dark-tint: color-mix(in oklab, var(--color-dark) 75%, transparent);
 
+	--font-display: "Geist Mono Variable", monospace;
+
 	--text-mini: 0.75rem; /* 12px */
 	--text-mini--line-height: 1rem; /* 16px */
 
-	--text-display: 0.875rem; /* 14px */
-	--text-display--line-height: 1.125rem; /* 18px */
+	--text-display: 1rem; /* 16px */
+	--text-display--line-height: 1.25rem; /* 20px */
 
-	--text-edit: 1rem; /* 16px */
+	--text-edit: 1.125rem; /* 18px */
 	--text-edit--line-height: 1.5rem; /* 24px */
 }
 
 @layer base {
+	#root {
+		@apply m-0 text-display;
+		font-family: "Geist Mono Variable", monospace;
+	}
+
+	body {
+		@apply h-screen w-screen font-display;
+	}
+
+	.toaster .toast {
+		@apply py-2! hover:py-2! font-mono!;
+	}
+
+	.toaster .title {
+		@apply text-left!;
+	}
+
 	[tooltip-title] {
 		@apply relative;
 

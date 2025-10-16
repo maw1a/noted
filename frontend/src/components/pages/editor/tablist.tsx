@@ -4,6 +4,7 @@ import { IconButton } from "../../ui/button";
 import type { IconName } from "../../icon";
 import { cn } from "../../../utils/cn";
 import { withTooltip } from "../../ui/tooltip";
+import { useStore } from "../../store";
 
 type TabButtonProps = {
 	"tooltip-title"?: string;
@@ -13,26 +14,30 @@ type TabButtonProps = {
 	handler: (arg1: string) => void;
 };
 
-export const TabButton = withTooltip<TabButtonProps>(
-	({ id, icon, value, handler, ...props }) => {
-		return (
-			<IconButton
-				{...props}
-				tooltip-position="bottom"
-				className={cn(
-					"text-text-muted hover:[&_svg]:text-text",
-					value === id
-						? "[&_svg]:text-text bg-surface-muted"
-						: "[&_svg]:text-text-muted",
-				)}
-				icon={icon}
-				onClick={() => {
-					if (value !== id) handler(id);
-				}}
-			/>
-		);
-	},
-);
+export const TabButton = ({
+	id,
+	icon,
+	value,
+	handler,
+	...props
+}: TabButtonProps) => {
+	return (
+		<IconButton
+			{...props}
+			tooltip-position="bottom"
+			className={cn(
+				"text-text-muted hover:[&_svg]:text-text",
+				value === id
+					? "[&_svg]:text-text bg-surface-muted"
+					: "[&_svg]:text-text-muted",
+			)}
+			icon={icon}
+			onClick={() => {
+				if (value !== id) handler(id);
+			}}
+		/>
+	);
+};
 
 const Content: Record<string, ReactNode> = {
 	files: <div>Files</div>,
@@ -42,20 +47,23 @@ const Content: Record<string, ReactNode> = {
 };
 
 export const TabList = ({ defaultValue }: { defaultValue: string }) => {
-	const [value, setValue] = useState<string>(defaultValue);
+	const [state, setState] = useStore();
+	const value = state.sidebar_tab;
+	const setValue = (v: string) => setState("sidebar_tab", v as typeof value);
+
 	return (
 		<>
 			<div className="flex w-full justify-start px-4 gap-3">
 				<TabButton
 					icon="FolderClosed"
 					id="files"
-					title="Files"
+					tooltip-title="Files"
 					value={value}
 					handler={setValue}
 				/>
 				<TabButton
 					icon="Search"
-					title="Search in Files"
+					tooltip-title="Search in Files"
 					id="grep"
 					value={value}
 					handler={setValue}
@@ -63,14 +71,14 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 				<TabButton
 					icon="Bookmark"
 					id="saved"
-					title="Saved Notes"
+					tooltip-title="Saved Notes"
 					value={value}
 					handler={setValue}
 				/>
 				<TabButton
 					icon="Puzzle"
 					id="plugins"
-					title="Extensions for Noted"
+					tooltip-title="Extensions for Noted"
 					value={value}
 					handler={setValue}
 				/>

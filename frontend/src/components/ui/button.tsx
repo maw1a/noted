@@ -4,7 +4,7 @@ import { cn } from "../../utils/cn";
 import { Icon, IconName } from "../icon";
 
 export const buttonVariants = cva(
-	"p-2 text-display rounded-lg transition-colors",
+	"p-2 text-display rounded-lg transition-colors flex items-center gap-2",
 	{
 		variants: {
 			variant: {

@@ -68,7 +68,7 @@ function MenubarItem({
 	return (
 		<MenubarPrimitive.Item
 			className={cn(
-				"relative flex cursor-default select-none items-center rounded-sm px-2 py-1 text-sm outline-none focus:bg-surface-muted focus:text-text data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+				"relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-display outline-none focus:bg-surface-muted focus:text-text data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
 				inset && "pl-8",
 				className,
 			)}
@@ -163,7 +163,7 @@ function MenubarShortcut({
 	return (
 		<div
 			className={cn(
-				"flex items-center gap-0.5 ml-auto pl-4 text-base tracking-widest text-text-muted [&_svg]:size-3.5",
+				"flex items-center gap-0.5 ml-auto pl-4 text-display tracking-widest text-text-muted [&_svg]:size-3.5",
 				className,
 			)}
 			{...props}

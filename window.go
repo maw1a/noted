@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/leaanthony/u"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -24,6 +25,12 @@ func OpenDirectoryWindow(app *application.App) *application.WebviewWindow {
 			TitleBar:                application.MacTitleBarHiddenInset,
 			Backdrop:                application.MacBackdropTranslucent,
 			Appearance:              application.NSAppearanceNameDarkAqua,
+			WebviewPreferences: application.MacWebviewPreferences{
+				TabFocusesLinks:                     u.False,
+				AllowsBackForwardNavigationGestures: u.False,
+				FullscreenEnabled:                   u.True,
+				TextInteractionEnabled:              u.False,
+			},
 		},
 		URL: "/",
 	})

@@ -1,15 +1,8 @@
 import { useState, useCallback } from "react";
 import { State } from "./types";
 
-export function createState() {
-	const [state, setStateInternal] = useState<State>({
-		loading: false,
-		sidebar: true,
-		dialog: null,
-		root: "",
-		config: null,
-		notespaces: [],
-	});
+export function useStoreState(initialState: State) {
+	const [state, setStateInternal] = useState<State>(initialState);
 
 	const setState = useCallback((partial: Partial<State>): void => {
 		setStateInternal((prevState) => ({ ...prevState, ...partial }));
@@ -31,6 +24,9 @@ export function createState() {
 		arg0: Partial<State> | K,
 		arg1?: State[K],
 	) {
+		// DEBUG
+		// console.log("store.setState(", arg0, arg1, ")");
+
 		if (typeof arg1 === "undefined") {
 			const partial = arg0 as Partial<State>;
 			setState(partial);

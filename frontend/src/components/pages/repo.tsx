@@ -39,7 +39,9 @@ export const Repo = () => {
 					</svg>
 					<div className="flex flex-col items-center">
 						<h1 className="text-4xl font-bold">{app.title}</h1>
-						<p className="text-sm text-neutral-400">Version {app.version}</p>
+						<p className="text-display text-neutral-400">
+							Version {app.version}
+						</p>
 					</div>
 				</div>
 				<div className="flex flex-col items-stretch w-full gap-2 font-medium">

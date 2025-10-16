@@ -5,6 +5,7 @@ export type State = {
 	loading: boolean;
 
 	sidebar: boolean;
+	sidebar_tab: "files" | "grep" | "saved" | "plugins";
 
 	dialog:
 		| "cmd-palette"
@@ -16,6 +17,11 @@ export type State = {
 	root: string;
 	config: Config | null;
 	notespaces: Array<{ path: string; config: Config }>;
+
+	tabs: Array<string>;
+	active_tab: string | null;
+
+	bookmarks: Array<string>;
 };
 
 export type Services = {

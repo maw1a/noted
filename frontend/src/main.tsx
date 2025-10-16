@@ -5,6 +5,6 @@ import { App } from "./app";
 import "@fontsource-variable/geist-mono";
 import "./style.css";
 
-const container = document.body;
+const container = document.getElementById("root")!;
 const root = createRoot(container);
 root.render(<App />);

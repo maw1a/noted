@@ -15,17 +15,16 @@ export class NotespaceService {
 
 	async getRecentNotespaces(): Promise<Array<Notespace>> {
 		try {
+			let notespacePaths = [];
 			const unparsed = local.notespaces.get();
-			if (!unparsed) return [];
 
-			// Get JSON parsed notespaces including non-existing ones
-			const parsed = notespacePathsSchema.parse(unparsed);
-			// Filter the exisiting notespaces
-			const notespacePaths = (
-				parsed.findIndex((ns) => ns === this.root) > -1
-					? parsed
-					: [...parsed, this.root]
-			).slice(0, 10);
+			if (!unparsed) notespacePaths = [this.root];
+			else {
+				// Get JSON parsed notespaces including non-existing ones
+				const parsed = notespacePathsSchema.parse(unparsed);
+				// Filter the exisiting notespaces
+				notespacePaths = Array.from(new Set([...parsed, this.root]));
+			}
 
 			const notespaces = await GetNotespaceFromPaths(notespacePaths);
 
@@ -34,7 +33,7 @@ export class NotespaceService {
 			);
 
 			// Update cache if there are non-existing notespaces
-			if (recents.length != parsed.length)
+			if (recents.length != notespacePaths.length)
 				local.notespaces.set(recents.map(({ path }) => path));
 
 			return recents;

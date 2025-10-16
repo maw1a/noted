@@ -1,7 +1,26 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { createState } from "./state";
+import { useStoreState } from "./state";
+import { State } from "./types";
 
-type StoreContextType = ReturnType<typeof createState>;
+const initialState: State = {
+	loading: false,
+
+	sidebar: true,
+	sidebar_tab: "files",
+
+	dialog: null,
+
+	root: "",
+	config: null,
+	notespaces: [],
+
+	tabs: [],
+	active_tab: null,
+
+	bookmarks: [],
+};
+
+type StoreContextType = ReturnType<typeof useStoreState>;
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
@@ -13,7 +32,7 @@ export const useStore = (): StoreContextType => {
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-	const stateValue = createState();
+	const stateValue = useStoreState(initialState);
 
 	return (
 		<StoreContext.Provider value={stateValue}>{children}</StoreContext.Provider>
