@@ -31,6 +31,14 @@ export function GetNotespaceFromPaths(paths: string[]): $CancellablePromise<$mod
     });
 }
 
+export function OpenExisitingRepo(): $CancellablePromise<string> {
+    return $Call.ByID(2582740457);
+}
+
+export function OpenRepoDirectory(dir: string): $CancellablePromise<string> {
+    return $Call.ByID(1950941394, dir);
+}
+
 export function PollStream(max: number): $CancellablePromise<$models.StreamEvent[]> {
     return $Call.ByID(1655857422, max).then(($result: any) => {
         return $$createType4($result);

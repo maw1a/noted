@@ -11,7 +11,6 @@ import {
 } from "../ui/command";
 import { commandList } from "../../command";
 import { KeyIcon } from "../icon";
-import { useMatch } from "react-router-dom";
 
 export function CommandPalette({ children }: { children: ReactNode }) {
 	const [state, setState] = useStore();

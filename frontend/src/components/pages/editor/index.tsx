@@ -3,9 +3,8 @@ import { StoreProvider, useStore } from "../../store";
 import { Sidebar } from "./sidebar";
 import { Textarea } from "./textarea";
 import { NotespaceService } from "../../../services/notespace";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { toast } from "sonner";
-import { State } from "../../store/types";
 import { getCommand } from "../../../command";
 
 const MainContent = () => {
@@ -28,15 +27,15 @@ const MainContent = () => {
 		try {
 			setLoading(true);
 
-			const [{ config, path }, notespaces] = await Promise.all([
+			const [{ config, path: root }, notespaces] = await Promise.all([
 				notespace.getCurrentNotespace(),
 				notespace.getRecentNotespaces(),
 			]);
 
-			setState({ config, root: path, notespaces });
+			setState({ config, root, notespaces });
 
 			toast.success(
-				`${config?.name || path.split("/").pop()} notespace ready.`,
+				`${config?.name || root.split("/").pop()} notespace ready.`,
 			);
 		} catch (e) {
 			const error = e as Error;
@@ -80,9 +79,5 @@ const MainContent = () => {
 };
 
 export const Editor = () => {
-	return (
-		<StoreProvider>
-			<MainContent />
-		</StoreProvider>
-	);
+	return <MainContent />;
 };

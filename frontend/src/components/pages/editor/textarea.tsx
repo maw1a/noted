@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router";
 import { useStore } from "../../store";
 import { cn } from "../../../utils/cn";
 import { IconButton } from "../../ui/button";
@@ -16,6 +17,7 @@ import { Combobox } from "../../ui/combobox";
 
 export const Textarea = () => {
 	const [state, setState] = useStore();
+	const navigate = useNavigate();
 
 	const title = useMemo(
 		() => (state.config ? state.config.name : state.root.split("/").pop()),
@@ -59,6 +61,9 @@ export const Textarea = () => {
 						defaultValue={state.root}
 						searchPlaceholder="Search notespaces..."
 						notFoundText="No notespace found."
+						onSelect={(value) => {
+							navigate(`/editor?root=${value}`);
+						}}
 					/>
 				</div>
 

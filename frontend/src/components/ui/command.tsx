@@ -159,10 +159,7 @@ function CommandItem({
 	);
 }
 
-function CommandShortcut({
-	className,
-	...props
-}: React.ComponentProps<"span">) {
+function CommandShortcut({ className, ...props }: React.ComponentProps<"div">) {
 	return (
 		<div
 			data-slot="command-shortcut"

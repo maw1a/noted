@@ -37,7 +37,7 @@
 
 @layer base {
 	#root {
-		@apply m-0 text-display;
+		@apply m-0 h-full w-full text-display;
 		font-family: "Geist Mono Variable", monospace;
 	}
 

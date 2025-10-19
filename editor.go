@@ -82,7 +82,7 @@ func (e *Editor) CreateNewRepo() (string, error) {
 
 	if dir == "" {
 		log.Print("User cancelled directory selection")
-		return dir, fmt.Errorf("User cancelled directory selection")
+		return dir, fmt.Errorf("User cancelled selection")
 	}
 
 	// b. Create Repo
@@ -93,11 +93,52 @@ func (e *Editor) CreateNewRepo() (string, error) {
 	}
 
 	if !success {
-		log.Printf("Failed to create notes repo: %v", err)
-		return dir, err
+		log.Printf("Failed to create notespace: %v", err)
+		return dir, fmt.Errorf("Failed to create notespace")
 	}
 
 	// c. Open Editor
+	window := createEditor(dir)
+	e.window = window
+	e.rootPath = dir
+
+	return dir, err
+}
+
+func (e *Editor) OpenExisitingRepo() (string, error) {
+	// a. Select directory
+	dir, err := selectDirectory()
+
+	if err != nil {
+		return dir, err
+	}
+
+	if dir == "" {
+		log.Print("User cancelled directory selection")
+		return dir, fmt.Errorf("User cancelled selection")
+	}
+
+	// b. Open Editor
+	window := createEditor(dir)
+	e.window = window
+	e.rootPath = dir
+
+	return dir, err
+}
+
+func (e *Editor) OpenRepoDirectory(dir string) (string, error) {
+	success, err := directoryExists(dir)
+
+	if err != nil {
+		log.Printf("Failed to check directory: %v", err)
+		return dir, fmt.Errorf("Failed to open")
+	}
+
+	if !success {
+		log.Printf("Not a directory: %v", err)
+		return dir, fmt.Errorf("Failed to open")
+	}
+
 	window := createEditor(dir)
 	e.window = window
 	e.rootPath = dir
@@ -147,6 +188,18 @@ func (e *Editor) GetNotespaceFromPaths(paths []string) []Notespace {
 	}
 
 	return results
+}
+
+func directoryExists(path string) (bool, error) {
+	info, err := os.Stat(path)
+	if err == nil {
+		return info.IsDir(), nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	return false, err
 }
 
 func getConfig(path string) *Config {

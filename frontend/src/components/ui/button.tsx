@@ -8,7 +8,7 @@ export const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: "bg-transparent hover:bg-surface-muted",
+				default: "bg-surface hover:bg-surface-muted",
 				ghost: "bg-transparent hover:bg-dark-tint",
 			},
 		},
@@ -27,7 +27,7 @@ export const Button = React.forwardRef<
 	return (
 		<button
 			ref={ref}
-			className={cn(buttonVariants({ variant }), className)}
+			className={cn(buttonVariants({ variant }), "px-3", className)}
 			{...props}
 		>
 			{children}

@@ -11,19 +11,25 @@ const notespacePathsSchema = z.array(z.string());
 type Notespace = { config: Config; path: string };
 
 export class NotespaceService {
-	constructor(private readonly root: string) {}
+	private root: string | undefined = undefined;
 
-	async getRecentNotespaces(): Promise<Array<Notespace>> {
+	constructor(root?: string) {
+		if (root) this.addRoot(root);
+	}
+
+	public async getRecentNotespaces(): Promise<Array<Notespace>> {
 		try {
-			let notespacePaths = [];
+			let notespacePaths: Array<string> = [];
 			const unparsed = local.notespaces.get();
 
-			if (!unparsed) notespacePaths = [this.root];
+			if (!unparsed) notespacePaths = this.root ? [this.root] : [];
 			else {
 				// Get JSON parsed notespaces including non-existing ones
 				const parsed = notespacePathsSchema.parse(unparsed);
 				// Filter the exisiting notespaces
-				notespacePaths = Array.from(new Set([...parsed, this.root]));
+				notespacePaths = Array.from(
+					new Set(this.root ? [...parsed, this.root] : [...parsed]),
+				);
 			}
 
 			const notespaces = await GetNotespaceFromPaths(notespacePaths);
@@ -42,7 +48,7 @@ export class NotespaceService {
 			const current = await this.getCurrentNotespace();
 
 			if (current.config) {
-				local.notespaces.set([this.root]);
+				local.notespaces.set(this.root ? [this.root] : []);
 				return [current] as Array<Notespace>;
 			}
 
@@ -51,8 +57,12 @@ export class NotespaceService {
 		}
 	}
 
-	async getCurrentNotespace() {
+	public async getCurrentNotespace() {
 		const { config, path } = await GetCurrentNotespace();
 		return { config, path };
+	}
+
+	public addRoot(root: string) {
+		this.root = root;
 	}
 }
