@@ -36,15 +36,10 @@ type Editor struct {
 
 	window *application.WebviewWindow
 
-	scanner *Scanner
-
-	mu         sync.RWMutex
-	rootPath   string
-	rootTree   *Node
+	mu       sync.RWMutex
+	rootPath string
+	// rootTree   *Node
 	cancelScan context.CancelFunc
-
-	streamMu   sync.Mutex
-	streamChan chan StreamEvent
 }
 
 type EditorState struct {
@@ -53,24 +48,9 @@ type EditorState struct {
 
 func NewEditorService() *Editor {
 	return &Editor{
-		ctx:     context.Background(),
-		scanner: NewScanner(),
+		ctx: context.Background(),
 	}
 }
-
-// Flows
-// 1. Create:
-// - a. Select directory
-// - b. Create Repo
-// - c. Open Editor
-// 2. Open:
-// - a. Select directory
-// - b. Open Editor
-// 3. Clone:
-// - a. Take Git URL
-// - b. Select Directory
-// - c. Clone Repo
-// - d. Open Editor
 
 func (e *Editor) CreateNewRepo() (string, error) {
 	// a. Select directory

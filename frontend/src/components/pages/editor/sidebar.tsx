@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useStore } from "../../store";
 import { IconButton } from "../../ui/button";
 import { TabList } from "./tablist";

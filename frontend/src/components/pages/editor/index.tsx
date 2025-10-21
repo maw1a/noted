@@ -1,57 +1,30 @@
-import { useCallback, useEffect, useMemo } from "react";
-import { StoreProvider, useStore } from "../../store";
+import { useEffect } from "react";
+import { type LoaderFunctionArgs, Outlet, useLoaderData } from "react-router";
+
+import { useStore } from "../../store";
+
+import { Loader } from "../../ui/loader";
 import { Sidebar } from "./sidebar";
 import { Textarea } from "./textarea";
-import { NotespaceService } from "../../../services/notespace";
-import { useLocation } from "react-router";
-import { toast } from "sonner";
+
 import { getCommand } from "../../../command";
+import { NotespaceService } from "../../../services/notespace";
+import { ScannerService } from "../../../services/scanner";
 
-const MainContent = () => {
+import logoIcon from "../../../assets/images/logo-icon.svg";
+
+const EditorContent = () => {
+	const loaderData = useLoaderData<LoaderData<typeof EditorContent.loader>>();
 	const [state, setState] = useStore();
-	const location = useLocation();
-
-	const setLoading = useCallback(
-		(loading: boolean) => setState("loading", loading),
-		[setState],
-	);
-
-	const notespace = useMemo(() => {
-		const searchParams = new URLSearchParams(location.search);
-		const root = searchParams.get("root");
-		return root ? new NotespaceService(root) : undefined;
-	}, [location.search]);
-
-	async function setupEditor() {
-		if (!notespace) return;
-		try {
-			setLoading(true);
-
-			const [{ config, path: root }, notespaces] = await Promise.all([
-				notespace.getCurrentNotespace(),
-				notespace.getRecentNotespaces(),
-			]);
-
-			setState({ config, root, notespaces });
-
-			toast.success(
-				`${config?.name || root.split("/").pop()} notespace ready.`,
-			);
-		} catch (e) {
-			const error = e as Error;
-			console.log({ error });
-
-			toast.error("Failed to load notespace.", {
-				description: JSON.stringify(error, null, 2),
-			});
-		} finally {
-			setLoading(false);
-		}
-	}
 
 	useEffect(() => {
-		setupEditor();
-	}, []);
+		setState({
+			config: loaderData.config,
+			root: loaderData.path,
+			notespaces: loaderData.notespaces,
+			rootNode: loaderData.rootNode,
+		});
+	}, [loaderData]);
 
 	// Key Binding useEffect
 	useEffect(() => {
@@ -69,15 +42,57 @@ const MainContent = () => {
 	}, [state, setState]);
 
 	return (
-		<div className="flex flex-col h-full items-stretch w-full">
-			<div className="flex-1 w-full flex gap-4 p-0">
-				<Sidebar />
-				<Textarea />
-			</div>
+		<div className="flex-1 w-full flex gap-4 p-0">
+			<Sidebar />
+			<Textarea />
 		</div>
 	);
 };
 
-export const Editor = () => {
-	return <MainContent />;
+const Editor = () => {
+	return (
+		<div className="flex flex-col h-full items-stretch w-full select-none">
+			<Outlet />
+		</div>
+	);
 };
+
+EditorContent.loader = async ({ request }: LoaderFunctionArgs) => {
+	const url = new URL(request.url);
+	const root = url.searchParams.get("root");
+
+	if (!root) throw new Error("Failed to open editor. No notespace selected.");
+
+	const notespace = new NotespaceService(root);
+	const scanner = new ScannerService(root);
+	const [{ config, path }, notespaces, rootNode] = await Promise.all([
+		notespace.getCurrentNotespace(),
+		notespace.getRecentNotespaces(),
+		scanner.getFileTree(),
+	]);
+
+	return { config, path, notespaces, rootNode };
+};
+
+EditorContent.Fallback = () => (
+	<div className="h-full w-full flex items-center justify-center">
+		<div className="bg-dark-tint text-text rounded-2xl p-8 shadow-dark shadow-lg w-md">
+			<div className="flex flex-col justify-center items-center gap-4">
+				<svg className="size-12 text-neutral-200" viewBox="0 0 36 36">
+					<use href={`${logoIcon}#logo-icon`} />
+				</svg>
+				<div className="flex flex-col items-center gap-1">
+					<p className="text-text text-display text-center">
+						Setting up your notespace
+					</p>
+					<p className="text-text-muted text-mini text-center">
+						Opening Your Notespace, This may take few seconds
+					</p>
+				</div>
+				<Loader />
+			</div>
+		</div>
+	</div>
+);
+
+export { Editor, EditorContent };

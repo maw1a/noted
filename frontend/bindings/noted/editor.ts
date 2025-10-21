@@ -39,35 +39,7 @@ export function OpenRepoDirectory(dir: string): $CancellablePromise<string> {
     return $Call.ByID(1950941394, dir);
 }
 
-export function PollStream(max: number): $CancellablePromise<$models.StreamEvent[]> {
-    return $Call.ByID(1655857422, max).then(($result: any) => {
-        return $$createType4($result);
-    });
-}
-
-export function PollTree(): $CancellablePromise<$models.Node | null> {
-    return $Call.ByID(1783588946).then(($result: any) => {
-        return $$createType6($result);
-    });
-}
-
-export function Rescan(): $CancellablePromise<void> {
-    return $Call.ByID(667146907);
-}
-
-export function StartScan(root: string): $CancellablePromise<void> {
-    return $Call.ByID(1696141040, root);
-}
-
-export function StopScan(): $CancellablePromise<void> {
-    return $Call.ByID(986157398);
-}
-
 // Private type creation functions
 const $$createType0 = $models.Notespace.createFrom;
 const $$createType1 = $models.EditorState.createFrom;
 const $$createType2 = $Create.Array($$createType0);
-const $$createType3 = $models.StreamEvent.createFrom;
-const $$createType4 = $Create.Array($$createType3);
-const $$createType5 = $models.Node.createFrom;
-const $$createType6 = $Create.Nullable($$createType5);

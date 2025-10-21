@@ -73,3 +73,10 @@ export const editorNotespaceBookmark = new Command({
 		});
 	},
 });
+
+export const editorNotespaceNewFile = new Command({
+	id: "editor.notespace.file.new",
+	label: "Create New File",
+	shortcut: ["Meta", "N"],
+	handler: (state) => state,
+});

@@ -31,6 +31,7 @@ func main() {
 		Description: "Simple notes app based on Git. Write in markdown and web components. Save, share, collaborate across notes repositories. Because Notion sucks.",
 		Services: []application.Service{
 			application.NewService(NewEditorService()),
+			application.NewService(NewScanner()),
 		},
 		Assets: application.AssetOptions{
 			Handler: application.AssetFileServerFS(assets),

@@ -59,10 +59,6 @@ export class EditorState {
     }
 }
 
-/**
- * Node represents a directory tree node.
- * Children are only populated for directories.
- */
 export class Node {
     "name": string;
     "path": string;
@@ -143,43 +139,9 @@ export class Notespace {
     }
 }
 
-/**
- * StreamEvent is sent incrementally during scanning to update the UI.
- */
-export class StreamEvent {
-    /**
-     * "node" | "done" | "error"`
-     */
-    "kind": string;
-    "node"?: Node | null;
-    "err"?: string;
-
-    /** Creates a new StreamEvent instance. */
-    constructor($$source: Partial<StreamEvent> = {}) {
-        if (!("kind" in $$source)) {
-            this["kind"] = "";
-        }
-
-        Object.assign(this, $$source);
-    }
-
-    /**
-     * Creates a new StreamEvent instance from a string or object.
-     */
-    static createFrom($$source: any = {}): StreamEvent {
-        const $$createField1_0 = $$createType5;
-        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
-        if ("node" in $$parsedSource) {
-            $$parsedSource["node"] = $$createField1_0($$parsedSource["node"]);
-        }
-        return new StreamEvent($$parsedSource as Partial<StreamEvent>);
-    }
-}
-
 // Private type creation functions
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
 const $$createType1 = Node.createFrom;
 const $$createType2 = $Create.Array($$createType1);
 const $$createType3 = Config.createFrom;
 const $$createType4 = $Create.Nullable($$createType3);
-const $$createType5 = $Create.Nullable($$createType1);

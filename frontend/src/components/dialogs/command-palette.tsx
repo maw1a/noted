@@ -26,7 +26,13 @@ export function CommandPalette({ children }: { children: ReactNode }) {
 	);
 
 	return (
-		<CommandDialog modal trigger={children} open={open} onOpenChange={setOpen}>
+		<CommandDialog
+			className="select-none"
+			modal
+			trigger={children}
+			open={open}
+			onOpenChange={setOpen}
+		>
 			<CommandInput placeholder="Run a command..." />
 			<CommandEmpty>No matches</CommandEmpty>
 			<CommandList>

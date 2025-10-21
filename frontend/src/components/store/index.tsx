@@ -1,6 +1,6 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useStoreState } from "./state";
-import { State } from "./types";
+import type { State } from "./types";
 
 const initialState: State = {
 	loading: false,
@@ -14,6 +14,7 @@ const initialState: State = {
 	config: null,
 	notespaces: [],
 
+	rootNode: null,
 	tabs: [],
 	active_tab: null,
 

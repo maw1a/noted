@@ -1,4 +1,4 @@
-import type { Config } from "../../../bindings/noted";
+import type { Config, Node } from "../../../bindings/noted";
 import type { NotespaceService } from "../../services/notespace";
 
 export type State = {
@@ -18,6 +18,7 @@ export type State = {
 	config: Config | null;
 	notespaces: Array<{ path: string; config: Config }>;
 
+	rootNode: Node | null;
 	tabs: Array<string>;
 	active_tab: string | null;
 

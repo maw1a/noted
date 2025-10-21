@@ -1,10 +1,10 @@
 import React, { useState, ReactNode } from "react";
 
-import { IconButton } from "../../ui/button";
-import type { IconName } from "../../icon";
-import { cn } from "../../../utils/cn";
-import { withTooltip } from "../../ui/tooltip";
-import { useStore } from "../../store";
+import { IconButton } from "../../../ui/button";
+import type { IconName } from "../../../icon";
+import { cn } from "../../../../utils/cn";
+import { useStore } from "../../../store";
+import { Files } from "./files";
 
 type TabButtonProps = {
 	"tooltip-title"?: string;
@@ -40,7 +40,7 @@ export const TabButton = ({
 };
 
 const Content: Record<string, ReactNode> = {
-	files: <div>Files</div>,
+	files: <Files />,
 	grep: <div>Grep</div>,
 	saved: <div>Saved</div>,
 	plugins: <div>Plugins</div>,
@@ -83,7 +83,7 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 					handler={setValue}
 				/>
 			</div>
-			<div className="flex-1 w-full">{Content[value]}</div>
+			<div className="flex-1 w-full text-text">{Content[value]}</div>
 		</>
 	);
 };
