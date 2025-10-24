@@ -7,11 +7,11 @@ import React, {
 	useState,
 } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { FileIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
 
 import { cn } from "../../utils/cn";
 import { Button } from "./button";
 import { ScrollArea } from "./scroll-area";
+import { ExactLink } from "../link";
 
 type TreeViewElement = {
 	id: string;
@@ -215,7 +215,7 @@ const Triangle = (props: React.ComponentProps<"svg">) => (
 
 type FolderProps = {
 	expandedItems?: string[];
-	element: string;
+	element: React.ReactNode;
 	isSelectable?: boolean;
 	isSelect?: boolean;
 } & React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>;
@@ -256,7 +256,7 @@ const Folder = forwardRef<
 						className,
 						isSelect && isSelectable
 							? "bg-surface-muted text-text rounded-md"
-							: "text-text-muted",
+							: "text-text-muted hover:text-text",
 						{
 							"cursor-pointer": isSelectable,
 							"cursor-not-allowed opacity-50": !isSelectable,
@@ -273,9 +273,11 @@ const Folder = forwardRef<
 					>
 						<Triangle className="scale-150" />
 					</div>
-					<span className="py-0.5 px-1">{element}</span>
+					<div className="py-1 px-1.5 flex items-center justify-start gap-1">
+						{element}
+					</div>
 				</AccordionPrimitive.Trigger>
-				<AccordionPrimitive.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative h-full overflow-hidden text-display">
+				<AccordionPrimitive.Content className="relative h-full overflow-hidden text-display">
 					{element && indicator && <TreeIndicator aria-hidden="true" />}
 					<AccordionPrimitive.Root
 						dir={direction}
@@ -298,52 +300,43 @@ const Folder = forwardRef<
 Folder.displayName = "Folder";
 
 const File = forwardRef<
-	HTMLButtonElement,
+	HTMLAnchorElement,
 	{
 		value: string;
 		handleSelect?: (id: string) => void;
-		isSelectable?: boolean;
-		isSelect?: boolean;
-		fileIcon?: React.ReactNode;
-	} & React.ButtonHTMLAttributes<HTMLButtonElement>
->(
-	(
-		{
-			value,
-			className,
-			handleSelect,
-			isSelectable = true,
-			isSelect,
-			fileIcon,
-			children,
-			...props
-		},
-		ref,
-	) => {
-		const { direction, selectedId, selectItem } = useTree();
-		const isSelected = isSelect ?? selectedId === value;
-		return (
-			<button
-				ref={ref}
-				type="button"
-				disabled={!isSelectable}
-				className={cn(
-					"flex w-fit items-center gap-1 rounded-md px-1 py-0.5 text-display duration-200 ease-in-out rtl:pr-0 rtl:pl-1",
-					isSelected && isSelectable
-						? "bg-surface-muted text-text"
-						: "text-text-muted",
-					isSelectable ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+		children: React.ReactNode;
+	} & Omit<React.ComponentProps<typeof ExactLink>, "children">
+>(({ value, className, handleSelect, children, ...props }, ref) => {
+	const { direction } = useTree();
+	return (
+		<ExactLink
+			ref={ref}
+			className={({ isActive }) =>
+				cn(
+					"flex w-full items-center text-display py-0.5 pr-1 cursor-pointer",
 					direction === "rtl" ? "rtl" : "ltr",
+					isActive ? "text-text" : "text-text-muted hover:text-text",
 					className,
-				)}
-				onClick={() => selectItem(value)}
-				{...props}
-			>
-				{children}
-			</button>
-		);
-	},
-);
+				)
+			}
+			onClick={() => {
+				handleSelect?.(value);
+			}}
+			{...props}
+		>
+			{({ isActive }) => (
+				<div
+					className={cn(
+						"flex w-fit gap-1 items-center justify-start rounded-md px-1.5 py-0.5",
+						isActive && "bg-surface-muted",
+					)}
+				>
+					{children}
+				</div>
+			)}
+		</ExactLink>
+	);
+});
 
 File.displayName = "File";
 

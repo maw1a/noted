@@ -1,5 +1,4 @@
-import type { Config, Node } from "../../../bindings/noted";
-import type { NotespaceService } from "../../services/notespace";
+import type { Config, Node } from "@go/noted";
 
 export type State = {
 	loading: boolean;
@@ -25,6 +24,7 @@ export type State = {
 	bookmarks: Array<string>;
 };
 
-export type Services = {
-	notespace?: NotespaceService;
+export type SetState = {
+	(partial: Partial<State>): void;
+	<K extends keyof State>(key: K, value: State[K]): void;
 };

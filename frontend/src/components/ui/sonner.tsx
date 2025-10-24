@@ -1,5 +1,5 @@
 import { Toaster as Sonner, ToasterProps } from "sonner";
-import { Icon } from "../icon";
+import { Icon } from "@/components/icon";
 import { Loader } from "./loader";
 
 const Toaster = ({ ...props }: ToasterProps) => {

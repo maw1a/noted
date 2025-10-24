@@ -1,10 +1,10 @@
 import React, { ButtonHTMLAttributes, ReactNode } from "react";
 import { cva } from "class-variance-authority";
-import { cn } from "../../utils/cn";
-import { Icon, IconName } from "../icon";
+import { cn } from "@/utils/cn";
+import { Icon, IconName } from "@/components/icon";
 
 export const buttonVariants = cva(
-	"p-2 text-display rounded-lg transition-colors flex items-center gap-2",
+	"p-2 text-display rounded-lg transition-colors flex items-center gap-2 cursor-pointer",
 	{
 		variants: {
 			variant: {

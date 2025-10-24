@@ -1,4 +1,4 @@
-import type { State } from "../components/store/types";
+import type { State } from "@/components/store/types";
 
 export const disableWhenDialog = (p: State, n: State) => {
 	if (p.dialog || isInvalidDialogStateTransition(p, n)) return p;

@@ -66,7 +66,7 @@ func EditorWindow(app *application.App, path string) *application.WebviewWindow 
 		DisableResize:    false,
 		BackgroundColour: application.NewRGBA(27, 38, 54, 0),
 		Mac: application.MacWindow{
-			InvisibleTitleBarHeight: 40,
+			InvisibleTitleBarHeight: 20,
 			TitleBar:                application.MacTitleBarHiddenInset,
 			Backdrop:                application.MacBackdropTranslucent,
 			Appearance:              application.NSAppearanceNameDarkAqua,

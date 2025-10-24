@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
-import { useStore } from "../../store";
-import { cn } from "../../../utils/cn";
-import { IconButton } from "../../ui/button";
+import { Outlet, useNavigate } from "react-router";
+import { useStore } from "@/components/store";
+import { cn } from "@/utils/cn";
+import { IconButton } from "@/components/ui/button";
 import {
 	Menubar,
 	MenubarContent,
@@ -10,10 +10,11 @@ import {
 	MenubarMenu,
 	MenubarShortcut,
 	MenubarTrigger,
-} from "../../ui/menubar";
-import { KeyIcon } from "../../icon";
-import { CommandPalette } from "../../dialogs/command-palette";
-import { Combobox } from "../../ui/combobox";
+} from "@/components/ui/menubar";
+import { KeyIcon } from "@/components/icon";
+import { CommandPalette } from "@/components/dialogs/command-palette";
+import { Combobox } from "@/components/ui/combobox";
+import { Tablist } from "./tablist";
 
 export const Textarea = () => {
 	const [state, setState] = useStore();
@@ -28,7 +29,7 @@ export const Textarea = () => {
 		<main
 			className={cn(
 				"text-neutral-200 select-none flex-1 flex flex-col items-center justify-between gap-4 transition-[padding] overscroll-none overflow-hidden duration-300 pt-4 pr-4",
-				state.sidebar ? "pl-72" : "pl-4",
+				state.sidebar ? "pl-76" : "pl-4",
 			)}
 		>
 			<header className="w-full flex justify-between items-center">
@@ -129,6 +130,10 @@ export const Textarea = () => {
 					</Menubar>
 				</div>
 			</header>
+			<Tablist root={state.root} tabs={state.tabs} />
+			<section className="w-full flex-1 max-h-full overflow-scroll">
+				<Outlet />
+			</section>
 		</main>
 	);
 };

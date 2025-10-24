@@ -1,9 +1,9 @@
 import React, { ComponentProps } from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
-import { Icon } from "../icon";
+import { Icon } from "@/components/icon";
 import { buttonVariants } from "./button";
 
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
 function Menubar({
 	className,

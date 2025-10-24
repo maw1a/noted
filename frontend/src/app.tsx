@@ -7,6 +7,7 @@ import { Root } from "./components/pages/root";
 import { Repo } from "./components/pages/repo";
 import { Recents } from "./components/pages/repo/recents";
 import { Editor, EditorContent } from "./components/pages/editor";
+import { Content } from "./components/pages/editor/textarea/content";
 
 const router = createBrowserRouter([
 	{
@@ -30,10 +31,13 @@ const router = createBrowserRouter([
 				Component: Editor,
 				children: [
 					{
-						index: true,
+						path: "",
 						loader: EditorContent.loader,
 						HydrateFallback: EditorContent.Fallback,
 						Component: EditorContent,
+						children: [
+							{ index: true, loader: Content.loader, Component: Content },
+						],
 					},
 				],
 			},

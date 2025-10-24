@@ -1,19 +1,27 @@
-import { keySymbolMap } from "../utils/constants/key-symbol-map";
+import { keySymbolMap } from "@/utils/constants/key-symbol-map";
 import {
 	editorCommandPalette,
-	editorNotespaceBookmark,
-	editorNotespaceFind,
 	editorSidebarToggle,
+	editorSettings,
+	editorNotespaceFind,
+	editorNotespaceFileNew,
+	editorNotespaceFileOpen,
+	editorNotespaceFileBookmark,
 } from "./commands";
 
-export const commandList = [
+export const commands = {
 	editorCommandPalette,
 	editorSidebarToggle,
+	editorSettings,
 	editorNotespaceFind,
-	editorNotespaceBookmark,
-];
+	editorNotespaceFileNew,
+	editorNotespaceFileOpen,
+	editorNotespaceFileBookmark,
+};
 
-export const getCommand = (e: KeyboardEvent) => {
+export const commandList = Object.values(commands);
+
+export const getCommandFromEvent = (e: KeyboardEvent) => {
 	let keys: Array<string> = [];
 
 	if (e.altKey) keys.push("Alt");
@@ -33,3 +41,6 @@ export const getCommand = (e: KeyboardEvent) => {
 
 	return command;
 };
+
+export const getCommandFromId = (id: string) =>
+	commandList.find((cmd) => cmd.id === id);

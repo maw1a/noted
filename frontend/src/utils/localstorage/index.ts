@@ -1,4 +1,4 @@
-import { ISafeKeyStorage, Key, safeKeyStorage } from "./safeStorage";
+import { Key, safeKeyStorage } from "./safeStorage";
 
 // WARN: this can throw errors use in try_catch
 export const local = {

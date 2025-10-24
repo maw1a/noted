@@ -1,4 +1,6 @@
-import { State } from "../components/store/types";
+import { KeyIcon } from "@/components/icon";
+import { State } from "@/components/store/types";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { disableWhenDialog } from "./helpers";
 import { ICommand } from "./types";
 
@@ -29,11 +31,24 @@ class Command implements ICommand {
 	get keyCombination() {
 		return this.shortcut.toSorted().join();
 	}
+
+	Node(className?: string) {
+		return (
+			<KbdGroup className={className}>
+				<p className="mr-2 text-end w-44">{this.label}</p>
+				{this.shortcut.map((key) => (
+					<Kbd key={key} className="[&_svg]:size-3 [&_span]:text-mini">
+						<KeyIcon name={key} />
+					</Kbd>
+				))}
+			</KbdGroup>
+		);
+	}
 }
 
 export const editorCommandPalette = new Command({
 	id: "editor.command.palette",
-	label: "Command Palette",
+	label: "Show All Commands",
 	shortcut: ["Meta", "Shift", "P"],
 	handler: (state) => ({
 		...state,
@@ -50,16 +65,32 @@ export const editorSidebarToggle = new Command({
 		disableWhenDialog(state, { ...state, sidebar: !state.sidebar }),
 });
 
+export const editorSettings = new Command({
+	id: "editor.settings",
+	label: "Open Settings",
+	shortcut: ["Meta", ","],
+	handler: (state) => disableWhenDialog(state, { ...state }),
+});
+
+export const editorNotespaceFileOpen = new Command({
+	id: "editor.notespace.file.open",
+	label: "Go to File",
+	shortcut: ["Meta", "P"],
+	handler: (state) => ({
+		...state,
+	}),
+});
+
 export const editorNotespaceFind = new Command({
 	id: "editor.notespace.find",
-	label: "Search Notespace",
+	label: "Search in Notespace",
 	shortcut: ["Meta", "Shift", "F"],
 	handler: (state) =>
 		disableWhenDialog(state, { ...state, sidebar_tab: "grep" }),
 });
 
-export const editorNotespaceBookmark = new Command({
-	id: "editor.notespace.bookmark",
+export const editorNotespaceFileBookmark = new Command({
+	id: "editor.notespace.file.bookmark",
 	label: "Bookmark Note",
 	shortcut: ["Meta", "D"],
 	handler: (state) => {
@@ -74,7 +105,7 @@ export const editorNotespaceBookmark = new Command({
 	},
 });
 
-export const editorNotespaceNewFile = new Command({
+export const editorNotespaceFileNew = new Command({
 	id: "editor.notespace.file.new",
 	label: "Create New File",
 	shortcut: ["Meta", "N"],

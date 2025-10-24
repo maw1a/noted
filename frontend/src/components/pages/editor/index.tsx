@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { type LoaderFunctionArgs, Outlet, useLoaderData } from "react-router";
 
-import { useStore } from "../../store";
+import { useStore } from "@/components/store";
 
-import { Loader } from "../../ui/loader";
+import { Loader } from "@/components/ui/loader";
 import { Sidebar } from "./sidebar";
 import { Textarea } from "./textarea";
 
-import { getCommand } from "../../../command";
-import { NotespaceService } from "../../../services/notespace";
-import { ScannerService } from "../../../services/scanner";
+import { getCommandFromEvent } from "@/command";
+import { NotespaceService } from "@/services/notespace";
+import { ScannerService } from "@/services/scanner";
 
-import logoIcon from "../../../assets/images/logo-icon.svg";
+import logoIcon from "@/assets/images/logo-icon.svg";
 
 const EditorContent = () => {
 	const loaderData = useLoaderData<LoaderData<typeof EditorContent.loader>>();
@@ -19,8 +19,8 @@ const EditorContent = () => {
 
 	useEffect(() => {
 		setState({
-			config: loaderData.config,
-			root: loaderData.path,
+			config: loaderData.notespace.config,
+			root: loaderData.notespace.path,
 			notespaces: loaderData.notespaces,
 			rootNode: loaderData.rootNode,
 		});
@@ -29,7 +29,7 @@ const EditorContent = () => {
 	// Key Binding useEffect
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {
-			const command = getCommand(e);
+			const command = getCommandFromEvent(e);
 
 			if (command) {
 				e.preventDefault();
@@ -42,7 +42,7 @@ const EditorContent = () => {
 	}, [state, setState]);
 
 	return (
-		<div className="flex-1 w-full flex gap-4 p-0">
+		<div className="flex-1 w-full max-h-full flex gap-4 p-0">
 			<Sidebar />
 			<Textarea />
 		</div>
@@ -65,13 +65,18 @@ EditorContent.loader = async ({ request }: LoaderFunctionArgs) => {
 
 	const notespace = new NotespaceService(root);
 	const scanner = new ScannerService(root);
+
 	const [{ config, path }, notespaces, rootNode] = await Promise.all([
 		notespace.getCurrentNotespace(),
 		notespace.getRecentNotespaces(),
 		scanner.getFileTree(),
 	]);
 
-	return { config, path, notespaces, rootNode };
+	return {
+		notespaces,
+		rootNode,
+		notespace: { config, path },
+	};
 };
 
 EditorContent.Fallback = () => (

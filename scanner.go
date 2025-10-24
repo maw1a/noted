@@ -61,6 +61,16 @@ func (s *Scanner) GetFileTree(root string) (Node, error) {
 	return s.buildNode(base, base, 0, visited)
 }
 
+func (s *Scanner) GetFileData(path string) (string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Printf("failed to load file \"%s\" error: %v", path, err)
+		return "", err
+	}
+
+	return string(data), nil
+}
+
 // buildNode constructs a Node for the given path; rootBase is the anchor for relative paths.
 func (s *Scanner) buildNode(path string, rootBase string, depth int, visited map[string]struct{}) (Node, error) {
 	entryLstat, err := os.Lstat(path)

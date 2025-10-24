@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import { cn } from "../../utils/cn";
+import { cn } from "@/utils/cn";
 
 import {
 	Command,
@@ -11,7 +11,7 @@ import {
 } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
-import { Icon } from "../icon";
+import { Icon } from "@/components/icon";
 
 type ComboboxProps = {
 	placeholder?: string;

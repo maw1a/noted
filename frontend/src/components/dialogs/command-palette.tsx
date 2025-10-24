@@ -9,7 +9,7 @@ import {
 	CommandList,
 	CommandShortcut,
 } from "../ui/command";
-import { commandList } from "../../command";
+import { commandList } from "@/command";
 import { KeyIcon } from "../icon";
 
 export function CommandPalette({ children }: { children: ReactNode }) {

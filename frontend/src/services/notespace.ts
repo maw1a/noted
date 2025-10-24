@@ -1,10 +1,7 @@
 import z from "zod";
-import type { Config } from "../../bindings/noted";
-import {
-	GetCurrentNotespace,
-	GetNotespaceFromPaths,
-} from "../../bindings/noted/editor";
-import { local } from "../utils/localstorage";
+import type { Config } from "@go/noted";
+import { GetCurrentNotespace, GetNotespaceFromPaths } from "@go/noted/editor";
+import { local } from "@/utils/localstorage";
 
 const notespacePathsSchema = z.array(z.string());
 

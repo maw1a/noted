@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import { Button } from "../../ui/button";
-import { Loader } from "../../ui/loader";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { toast } from "sonner";
 
-import app from "../../../utils/constants/app";
+import app from "@/utils/constants/app";
 
 import {
 	CreateNewRepo,

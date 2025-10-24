@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useStore } from "../../store";
-import { IconButton } from "../../ui/button";
+import { useStore } from "@/components/store";
+import { IconButton } from "@/components/ui/button";
+import { cn } from "@/utils/cn";
 import { TabList } from "./tablist";
-import { cn } from "../../../utils/cn";
 
 export const Sidebar = () => {
 	const [state, setState] = useStore();

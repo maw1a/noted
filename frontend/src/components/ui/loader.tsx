@@ -1,9 +1,18 @@
-import React from "react";
-import { cn } from "../../utils/cn";
+import { ComponentProps } from "react";
+import { cn } from "@/utils/cn";
 
-export const Loader = ({ size = 3 }: { size?: 1 | 2 | 3 }) => (
+export const Loader = ({
+	size = 3,
+	className,
+	...props
+}: ComponentProps<"div"> & { size?: 1 | 2 | 3 }) => (
 	<div
-		className={cn("flex items-center", ["gap-1", "gap-1.5", "gap-2"][size - 1])}
+		{...props}
+		className={cn(
+			className,
+			"flex items-center",
+			["gap-1", "gap-1.5", "gap-2"][size - 1],
+		)}
 	>
 		<span
 			className={cn(

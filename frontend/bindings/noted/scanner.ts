@@ -9,6 +9,10 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
+export function GetFileData(path: string): $CancellablePromise<string> {
+    return $Call.ByID(118238128, path);
+}
+
 export function GetFileTree(root: string): $CancellablePromise<$models.Node> {
     return $Call.ByID(295743568, root).then(($result: any) => {
         return $$createType0($result);

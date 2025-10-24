@@ -1,11 +1,10 @@
 import { LoaderFunctionArgs, useLoaderData } from "react-router";
-import { NotespaceService } from "../../../services/notespace";
-import { Button } from "../../ui/button";
-import { OpenRepoDirectory } from "../../../../bindings/noted/editor";
 import { toast } from "sonner";
-import { useContext } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { NotespaceService } from "@/services/notespace";
+import { OpenRepoDirectory } from "@go/noted/editor";
 import { useRepoContext } from "./context";
-import { Loader } from "../../ui/loader";
 
 const Recents = () => {
 	const { recents } = useLoaderData<LoaderData<typeof Recents.loader>>();

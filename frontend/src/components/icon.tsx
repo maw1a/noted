@@ -1,5 +1,5 @@
 import { icons, type LucideProps } from "lucide-react";
-import { Keys, keySymbolMap } from "../utils/constants/key-symbol-map";
+import { Keys, keySymbolMap } from "@/utils/constants/key-symbol-map";
 
 export type IconName = keyof typeof icons;
 

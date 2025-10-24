@@ -1,9 +1,9 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, Activity, ComponentProps } from "react";
 
-import { IconButton } from "../../../ui/button";
-import type { IconName } from "../../../icon";
-import { cn } from "../../../../utils/cn";
-import { useStore } from "../../../store";
+import { IconButton } from "@/components/ui/button";
+import type { IconName } from "@/components/icon";
+import { cn } from "@/utils/cn";
+import { useStore } from "@/components/store";
 import { Files } from "./files";
 
 type TabButtonProps = {
@@ -12,7 +12,7 @@ type TabButtonProps = {
 	value: string;
 	icon: IconName;
 	handler: (arg1: string) => void;
-};
+} & ComponentProps<"button">;
 
 export const TabButton = ({
 	id,
@@ -26,7 +26,7 @@ export const TabButton = ({
 			{...props}
 			tooltip-position="bottom"
 			className={cn(
-				"text-text-muted hover:[&_svg]:text-text",
+				"text-text-muted hover:[&_svg]:text-text disabled:cursor-not-allowed",
 				value === id
 					? "[&_svg]:text-text bg-surface-muted"
 					: "[&_svg]:text-text-muted",
@@ -39,12 +39,13 @@ export const TabButton = ({
 	);
 };
 
-const Content: Record<string, ReactNode> = {
-	files: <Files />,
-	grep: <div>Grep</div>,
-	saved: <div>Saved</div>,
-	plugins: <div>Plugins</div>,
-};
+const Content = ({
+	selected,
+	children,
+}: {
+	selected: boolean;
+	children: ReactNode;
+}) => <Activity mode={selected ? "visible" : "hidden"}>{children}</Activity>;
 
 export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 	const [state, setState] = useStore();
@@ -67,6 +68,7 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 					id="grep"
 					value={value}
 					handler={setValue}
+					disabled
 				/>
 				<TabButton
 					icon="Bookmark"
@@ -74,6 +76,7 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 					tooltip-title="Saved Notes"
 					value={value}
 					handler={setValue}
+					disabled
 				/>
 				<TabButton
 					icon="Puzzle"
@@ -81,9 +84,25 @@ export const TabList = ({ defaultValue }: { defaultValue: string }) => {
 					tooltip-title="Extensions for Noted"
 					value={value}
 					handler={setValue}
+					disabled
 				/>
 			</div>
-			<div className="flex-1 w-full text-text">{Content[value]}</div>
+			<div className="flex-1 w-full text-text">
+				<Content selected={value === "files"}>
+					<div className="h-full">
+						<Files />
+					</div>
+				</Content>
+				<Content selected={value === "grep"}>
+					<div>Grep</div>
+				</Content>
+				<Content selected={value === "saved"}>
+					<div>Saved</div>
+				</Content>
+				<Content selected={value === "plugins"}>
+					<div>Plugins</div>
+				</Content>
+			</div>
 		</>
 	);
 };
