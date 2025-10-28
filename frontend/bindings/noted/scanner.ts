@@ -19,5 +19,9 @@ export function GetFileTree(root: string): $CancellablePromise<$models.Node> {
     });
 }
 
+export function SaveFileData(path: string, content: string): $CancellablePromise<void> {
+    return $Call.ByID(2669828497, path, content);
+}
+
 // Private type creation functions
 const $$createType0 = $models.Node.createFrom;

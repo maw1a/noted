@@ -37,8 +37,7 @@
 
 @layer base {
 	#root {
-		@apply m-0 h-full w-full text-display;
-		font-family: "Geist Mono Variable", monospace;
+		@apply m-0 h-full w-full font-display text-display selection:bg-text-muted;
 	}
 
 	body {
@@ -87,6 +86,41 @@
 	dialog[open] {
 		padding: 0; /* remove default dialog padding */
 		border: none;
+	}
+}
+
+@layer components {
+	.text-editor-wrapper .w-tc-editor {
+		@apply bg-transparent! text-edit! font-display!;
+	}
+
+	.text-editor-wrapper .w-tc-editor .w-tc-editor-text {
+		@apply pl-[calc(3ch+1rem)]! py-0! pt-6!;
+	}
+
+	.text-editor-wrapper .w-tc-editor .w-tc-editor-preview {
+		@apply p-0!;
+	}
+
+	.text-editor-wrapper .w-tc-editor code.code-highlight,
+	.text-editor-wrapper .w-tc-editor code.code-highlight .code-line {
+		@apply w-full! block! transition-none! rounded;
+	}
+
+	.text-editor-wrapper .w-tc-editor .token.property,
+	.text-editor-wrapper .w-tc-editor .token.string,
+	.text-editor-wrapper .w-tc-editor .token.number,
+	.text-editor-wrapper .w-tc-editor .token.boolean {
+		@apply text-text!;
+	}
+
+	.text-editor-wrapper .w-tc-editor .token.operator,
+	.text-editor-wrapper .w-tc-editor .token.punctuation {
+		@apply text-text-muted!;
+	}
+
+	.text-editor-wrapper .w-tc-editor .line-number {
+		@apply before:inline-block before:w-[3ch] before:mr-4 before:content-[attr(line)] before:text-text-muted before:font-display before:text-end;
 	}
 }
 

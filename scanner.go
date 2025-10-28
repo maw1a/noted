@@ -71,6 +71,15 @@ func (s *Scanner) GetFileData(path string) (string, error) {
 	return string(data), nil
 }
 
+func (s *Scanner) SaveFileData(path string, content string) error {
+	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+		log.Printf("failed to save file \"%s\" error: %v", path, err)
+		return err
+	}
+
+	return nil
+}
+
 // buildNode constructs a Node for the given path; rootBase is the anchor for relative paths.
 func (s *Scanner) buildNode(path string, rootBase string, depth int, visited map[string]struct{}) (Node, error) {
 	entryLstat, err := os.Lstat(path)

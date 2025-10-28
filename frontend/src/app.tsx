@@ -36,7 +36,12 @@ const router = createBrowserRouter([
 						HydrateFallback: EditorContent.Fallback,
 						Component: EditorContent,
 						children: [
-							{ index: true, loader: Content.loader, Component: Content },
+							{
+								index: true,
+								loader: Content.loader,
+								HydrateFallback: Content.Fallback,
+								Component: Content,
+							},
 						],
 					},
 				],
