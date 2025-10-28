@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import rehypePrism from "rehype-prism-plus";
 import rehypeRewrite from "rehype-rewrite";
 import type { Root, RootContent } from "hast";
-import { type FileInfo, FileService } from "@/services/file";
+import type { FileInfo } from "@/services";
 
 function getCaretLineIndex(value: string, caret: number): number {
   // Clamp caret in range
@@ -38,8 +38,6 @@ export const Editor: React.FC<EditorProps> = ({
   info,
   placeholder = "Start typing…",
   onChange: _onChange,
-  padding = 16,
-  minHeight = 160,
   style,
   colorMode,
 }) => {
@@ -71,8 +69,6 @@ export const Editor: React.FC<EditorProps> = ({
       <CodeEditor
         language={language}
         placeholder={placeholder}
-        padding={padding}
-        minHeight={minHeight}
         style={style}
         defaultValue={defaultValue}
         value={value}

@@ -1,3 +1,4 @@
+import { OpenRepoDirectory } from "@go/noted/editor";
 import { GetFileTree, GetFileData, SaveFileData } from "@go/noted/scanner";
 import * as prettier from "prettier";
 
@@ -31,6 +32,11 @@ export class FileService {
 
   public async saveFileContent(path: string, content: string) {
     await SaveFileData(path, content);
+  }
+
+  static async openRepoDirectory(root: string) {
+    const dir = await OpenRepoDirectory(root);
+    return dir;
   }
 
   static getFileInfo(root: string, path: string, ext?: string): FileInfo {

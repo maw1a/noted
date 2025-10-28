@@ -2,145 +2,151 @@
 @import "tw-animate-css";
 
 :root {
-	@apply m-0 rounded-4xl overscroll-none;
-	text-align: center;
+  @apply m-0 rounded-4xl overscroll-none;
+  text-align: center;
 }
 
 :focus-visible {
-	@apply outline-none;
+  @apply outline-none;
 }
 
 @theme {
-	--color-text: var(--color-neutral-200);
-	--color-text-muted: var(--color-neutral-400);
+  --color-text: var(--color-neutral-200);
+  --color-text-muted: var(--color-neutral-400);
 
-	--color-surface-muted: var(--color-neutral-700);
-	--color-surface: var(--color-neutral-800);
-	--color-dark: var(--color-neutral-900);
+  --color-surface-muted: var(--color-neutral-700);
+  --color-surface: var(--color-neutral-800);
+  --color-dark: var(--color-neutral-900);
 
-	--color-destructive: var(--color-red-600);
+  --color-destructive: var(--color-red-600);
 
-	--color-tint: color-mix(in oklab, var(--color-surface) 75%, transparent);
-	--color-dark-tint: color-mix(in oklab, var(--color-dark) 75%, transparent);
+  --color-tint: color-mix(in oklab, var(--color-surface) 75%, transparent);
+  --color-dark-tint: color-mix(in oklab, var(--color-dark) 75%, transparent);
 
-	--font-display: "Geist Mono Variable", monospace;
+  --font-display: "Geist Mono Variable", monospace;
 
-	--text-mini: 0.75rem; /* 12px */
-	--text-mini--line-height: 1rem; /* 16px */
+  --text-mini: 0.75rem; /* 12px */
+  --text-mini--line-height: 1rem; /* 16px */
 
-	--text-display: 1rem; /* 16px */
-	--text-display--line-height: 1.25rem; /* 20px */
+  --text-display: 1rem; /* 16px */
+  --text-display--line-height: 1.25rem; /* 20px */
 
-	--text-edit: 1.125rem; /* 18px */
-	--text-edit--line-height: 1.5rem; /* 24px */
+  --text-edit: 1.125rem; /* 18px */
+  --text-edit--line-height: 1.5rem; /* 24px */
 }
 
 @layer base {
-	#root {
-		@apply m-0 h-full w-full font-display text-display selection:bg-text-muted;
-	}
+  #root {
+    @apply m-0 h-full w-full font-display text-display selection:bg-text-muted;
+  }
 
-	body {
-		@apply h-screen w-screen font-display;
-	}
+  body {
+    @apply h-screen w-screen font-display;
+  }
 
-	.toaster .toast {
-		@apply py-2! hover:py-2! font-mono!;
-	}
+  .toaster .toast {
+    @apply py-2! hover:py-2! font-mono!;
+  }
 
-	.toaster .title {
-		@apply text-left!;
-	}
+  .toaster .title {
+    @apply text-left!;
+  }
 
-	[tooltip-title] {
-		@apply relative;
+  [tooltip-title] {
+    @apply relative;
 
-		&::after {
-			content: attr(tooltip-title);
-			@apply pointer-events-none select-none opacity-0 absolute left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-surface px-2 py-1 text-mini text-text shadow-lg;
-			z-index: 10;
-		}
+    &::after {
+      content: attr(tooltip-title);
+      @apply pointer-events-none select-none opacity-0 absolute left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-surface px-2 py-1 text-mini text-text shadow-lg;
+      z-index: 10;
+    }
 
-		&:hover::after {
-			@apply opacity-100 delay-1000 duration-100;
-		}
+    &:hover::after {
+      @apply opacity-100 delay-1000 duration-100;
+    }
 
-		&:not([tooltip-position="bottom"]) {
-			&:hover::after {
-				@apply -top-7;
-			}
-		}
-	}
+    &:not([tooltip-position="bottom"]) {
+      &:hover::after {
+        @apply -top-7;
+      }
+    }
+  }
 
-	[tooltip-position="bottom"] {
-		&:hover::after {
-			@apply -bottom-7;
-		}
-	}
+  [tooltip-position="bottom"] {
+    &:hover::after {
+      @apply -bottom-7;
+    }
+  }
 
-	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(2px);
-	}
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
 
-	dialog[open] {
-		padding: 0; /* remove default dialog padding */
-		border: none;
-	}
+  dialog[open] {
+    padding: 0; /* remove default dialog padding */
+    border: none;
+  }
 }
 
 @layer components {
-	.text-editor-wrapper .w-tc-editor {
-		@apply bg-transparent! text-edit! font-display!;
-	}
+  .text-editor-wrapper,
+  .w-tc-editor,
+  .w-tc-editor-preview {
+    @apply h-full!;
+  }
 
-	.text-editor-wrapper .w-tc-editor .w-tc-editor-text {
-		@apply pl-[calc(3ch+1rem)]! py-0! pt-6!;
-	}
+  .text-editor-wrapper .w-tc-editor {
+    @apply bg-transparent! text-edit! font-display!;
+  }
 
-	.text-editor-wrapper .w-tc-editor .w-tc-editor-preview {
-		@apply p-0!;
-	}
+  .text-editor-wrapper .w-tc-editor .w-tc-editor-text {
+    @apply pl-[calc(3ch+1rem)]! py-0! pt-6!;
+  }
 
-	.text-editor-wrapper .w-tc-editor code.code-highlight,
-	.text-editor-wrapper .w-tc-editor code.code-highlight .code-line {
-		@apply w-full! block! transition-none! rounded;
-	}
+  .text-editor-wrapper .w-tc-editor .w-tc-editor-preview {
+    @apply p-0!;
+  }
 
-	.text-editor-wrapper .w-tc-editor .token.property,
-	.text-editor-wrapper .w-tc-editor .token.string,
-	.text-editor-wrapper .w-tc-editor .token.number,
-	.text-editor-wrapper .w-tc-editor .token.boolean {
-		@apply text-text!;
-	}
+  .text-editor-wrapper .w-tc-editor code.code-highlight,
+  .text-editor-wrapper .w-tc-editor code.code-highlight .code-line {
+    @apply w-full! block! transition-none! rounded;
+  }
 
-	.text-editor-wrapper .w-tc-editor .token.operator,
-	.text-editor-wrapper .w-tc-editor .token.punctuation {
-		@apply text-text-muted!;
-	}
+  .text-editor-wrapper .w-tc-editor .token.property,
+  .text-editor-wrapper .w-tc-editor .token.string,
+  .text-editor-wrapper .w-tc-editor .token.number,
+  .text-editor-wrapper .w-tc-editor .token.boolean {
+    @apply text-text!;
+  }
 
-	.text-editor-wrapper .w-tc-editor .line-number {
-		@apply before:inline-block before:w-[3ch] before:mr-4 before:content-[attr(line)] before:text-text-muted before:font-display before:text-end;
-	}
+  .text-editor-wrapper .w-tc-editor .token.operator,
+  .text-editor-wrapper .w-tc-editor .token.punctuation {
+    @apply text-text-muted!;
+  }
+
+  .text-editor-wrapper .w-tc-editor .line-number {
+    @apply before:inline-block before:w-[3ch] before:mr-4 before:content-[attr(line)] before:text-text-muted before:font-display before:text-end;
+  }
 }
 
 @layer utilities {
-	@keyframes loader-dots {
-		0% {
-			transform: scale(0);
-			opacity: 0;
-		}
-		40% {
-			transform: scale(1);
-			opacity: 1;
-		}
-		80% {
-			transform: scale(0);
-			opacity: 0;
-		}
-		100% {
-			transform: scale(0);
-			opacity: 0;
-		}
-	}
+  @keyframes loader-dots {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
 }

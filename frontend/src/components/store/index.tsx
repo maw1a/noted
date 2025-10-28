@@ -1,41 +1,54 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useMemo } from "react";
 import { useStoreState } from "./state";
-import type { State } from "./types";
+import type { State, StoreContextType } from "./types";
+import {
+  getServices,
+  type FileService,
+  type NotespaceService,
+} from "@/services";
 
 const initialState: State = {
-	loading: false,
+  loading: false,
 
-	sidebar: true,
-	sidebar_tab: "files",
+  sidebar: true,
+  sidebar_tab: "files",
 
-	dialog: null,
+  dialog: null,
 
-	root: "",
-	config: null,
-	notespaces: [],
+  root: "",
+  config: null,
+  notespaces: [],
 
-	rootNode: null,
-	tabs: [],
-	active_tab: null,
+  rootNode: null,
+  tabs: [],
+  active_tab: null,
 
-	bookmarks: [],
+  bookmarks: [],
 };
-
-type StoreContextType = ReturnType<typeof useStoreState>;
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
 export const useStore = (): StoreContextType => {
-	const ctx = useContext(StoreContext);
-	if (ctx == null) throw new Error("useStore must be used in StoreProvider");
+  const ctx = useContext(StoreContext);
+  if (ctx == null) throw new Error("useStore must be used in StoreProvider");
 
-	return ctx;
+  return ctx;
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-	const stateValue = useStoreState(initialState);
+  const [state, setState] = useStoreState(initialState);
+  const services = useMemo(
+    () =>
+      getServices(state.root) as {
+        notespace: NotespaceService;
+        files: FileService;
+      },
+    [state.root],
+  );
 
-	return (
-		<StoreContext.Provider value={stateValue}>{children}</StoreContext.Provider>
-	);
+  return (
+    <StoreContext.Provider value={{ state, setState, services }}>
+      {children}
+    </StoreContext.Provider>
+  );
 }

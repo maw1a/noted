@@ -1,9 +1,9 @@
-import { FC, useCallback, useEffect, useEffectEvent, useState } from "react";
+import { FC, useEffect, useEffectEvent, useState } from "react";
 import { type LoaderFunctionArgs, useLoaderData } from "react-router";
 
 import { commands } from "@/command";
 import { useStore } from "@/components/store";
-import { FileInfo, FileService } from "@/services/file";
+import { type FileInfo, FileService } from "@/services";
 import { Editor } from "./editor";
 
 import logoAltIcon from "@/assets/images/logo-alt-icon.svg";
@@ -36,8 +36,7 @@ const EditorContent: FC<{
         info={info}
         value={content}
         onChange={setContent}
-        minHeight={220}
-        style={{ overflow: "visible", paddingTop: "1.5rem" }}
+        style={{ overflow: "visible", paddingTop: "1.5rem", minHeight: "100%" }}
       />
     </div>
   );
@@ -50,7 +49,7 @@ const Content = () => {
     content: defaultContent,
     type,
   }: LoaderData<typeof Content.loader> = useLoaderData();
-  const [state, setState] = useStore();
+  const { state, setState } = useStore();
 
   const handleSelect = useEffectEvent((id: string) => {
     const activeIdx = state.active_tab

@@ -1,5 +1,5 @@
 import { KeyIcon } from "@/components/icon";
-import { SetState, State } from "@/components/store/types";
+import { StoreContextType } from "@/components/store/types";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { disableWhenDialog } from "./helpers";
 import { ICommand } from "./types";
@@ -8,7 +8,7 @@ class Command implements ICommand {
   public label: string;
   public id: string;
   public shortcut: Array<string>;
-  public handler: <T>(args: { state: State; setState: SetState } & T) => void;
+  public handler: <T>(args: StoreContextType & T) => void;
   public isAvailable: boolean = true;
   public isVisible: boolean = true;
 
@@ -123,6 +123,7 @@ export const editorNotespaceFileSave = new Command({
   label: "Create New File",
   shortcut: ["Meta", "S"],
   handler: ({ state }) => {
-    console.log("opened:", state.active_tab?.path);
+    if (!state.active_tab) return;
+    console.log("opened:", state.active_tab.path);
   },
 });

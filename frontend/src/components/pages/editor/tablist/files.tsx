@@ -1,9 +1,11 @@
 import { ComponentProps, useMemo } from "react";
-import type { Node } from "@go/noted";
+
 import { Icon } from "@/components/icon";
 import { useStore } from "@/components/store";
 import { Tree, File, Folder } from "@/components/ui/file-tree";
-import { FileService } from "@/services/file";
+import { FileService } from "@/services";
+
+import type { Node } from "@go/noted";
 
 enum NodeType {
   File = "file",
@@ -69,7 +71,7 @@ const FileNode = ({ root, node }: { root: string; node: Node }) => {
 };
 
 export const Files = () => {
-  const [state] = useStore();
+  const { state } = useStore();
   const expandedItems = useMemo(() => {
     if (!state.root) return [];
     if (state.active_tab) {

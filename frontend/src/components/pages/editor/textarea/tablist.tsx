@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { Icon } from "@/components/icon";
 import { useStore } from "@/components/store";
-import { FileService, type FileInfo } from "@/services/file";
+import { FileService, type FileInfo } from "@/services";
 
 const Tab = ({
   idx,
@@ -18,7 +18,10 @@ const Tab = ({
   root: string;
   duplicate?: boolean;
 }) => {
-  const [{ active_tab, tabs }, setState] = useStore();
+  const {
+    state: { active_tab, tabs },
+    setState,
+  } = useStore();
 
   const { isActive, isDirty, ...newState } = useMemo(() => {
     const isActive = active_tab?.path === info.path;

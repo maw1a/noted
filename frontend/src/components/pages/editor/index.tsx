@@ -7,15 +7,14 @@ import { Loader } from "@/components/ui/loader";
 import { Sidebar } from "./sidebar";
 import { Textarea } from "./textarea";
 
+import { getServices } from "@/services";
 import { getCommandFromEvent } from "@/command";
-import { NotespaceService } from "@/services/notespace";
-import { FileService } from "@/services/file";
 
 import logoIcon from "@/assets/images/logo-icon.svg";
 
 const EditorContent = () => {
   const loaderData = useLoaderData<LoaderData<typeof EditorContent.loader>>();
-  const [state, setState] = useStore();
+  const { state, setState, services } = useStore();
 
   useEffect(() => {
     setState({
@@ -33,7 +32,7 @@ const EditorContent = () => {
 
       if (command) {
         e.preventDefault();
-        command.handler({ state, setState });
+        command.handler({ state, setState, services });
       }
     };
 
@@ -63,13 +62,12 @@ EditorContent.loader = async ({ request }: LoaderFunctionArgs) => {
 
   if (!root) throw new Error("Failed to open editor. No notespace selected.");
 
-  const notespace = new NotespaceService(root);
-  const files = new FileService(root);
+  const services = getServices(root);
 
   const [{ config, path }, notespaces, rootNode] = await Promise.all([
-    notespace.getCurrentNotespace(),
-    notespace.getRecentNotespaces(),
-    files.getFileTree(),
+    services.notespace.getCurrentNotespace(),
+    services.notespace.getRecentNotespaces(),
+    services.files?.getFileTree(),
   ]);
 
   return {

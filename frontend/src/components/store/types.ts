@@ -1,3 +1,4 @@
+import type { NotespaceService, FileService } from "@/services";
 import type { Config, Node } from "@go/noted";
 
 export type State = {
@@ -27,4 +28,15 @@ export type State = {
 export type SetState = {
   (partial: Partial<State>): void;
   <K extends keyof State>(key: K, value: State[K]): void;
+};
+
+export type Services = {
+  notespace: NotespaceService;
+  files: FileService;
+};
+
+export type StoreContextType = {
+  state: State;
+  setState: SetState;
+  services: Services;
 };
