@@ -49,7 +49,7 @@ const Tab = ({
           cn(
             buttonVariants({ variant: "ghost" }),
             "px-3 py-1.5 flex gap-0.5 items-center justify-center text-display text-text-muted",
-            isActive && "bg-dark-tint",
+            isActive && "bg-dark-tint backdrop-blur-xs",
             isPending && "[&_span]:text-transparent [&_.loader]:visible",
           )
         }

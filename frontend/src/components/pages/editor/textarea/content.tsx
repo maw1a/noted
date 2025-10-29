@@ -1,4 +1,4 @@
-import { FC, useEffect, useEffectEvent, useState } from "react";
+import React, { FC, useEffect, useEffectEvent, useState } from "react";
 import { type LoaderFunctionArgs, useLoaderData } from "react-router";
 
 import { commands } from "@/command";
@@ -28,12 +28,20 @@ const EditorContent: FC<{
   info: FileInfo;
   content: string;
   setContent: (value: string) => void;
-}> = ({ info, content, setContent }) => {
+  handleSave: (ev: React.KeyboardEvent<HTMLTextAreaElement>) => Promise<
+    | {
+        content: string;
+        caret: [number, number];
+      }
+    | undefined
+  >;
+}> = ({ info, content, setContent, handleSave }) => {
   return (
     <div className="w-full h-full">
       <Editor
         colorMode="dark"
         info={info}
+        handleSave={handleSave}
         value={content}
         onChange={setContent}
         style={{ overflow: "visible", paddingTop: "1.5rem", minHeight: "100%" }}
@@ -49,7 +57,7 @@ const Content = () => {
     content: defaultContent,
     type,
   }: LoaderData<typeof Content.loader> = useLoaderData();
-  const { state, setState } = useStore();
+  const { state, setState, services } = useStore();
 
   const handleSelect = useEffectEvent((id: string) => {
     const activeIdx = state.active_tab
@@ -70,6 +78,27 @@ const Content = () => {
     });
   });
 
+  const handleSave = async (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (!state.active_tab) return;
+
+    const ta = ev.target as HTMLTextAreaElement;
+    const { content, caret } = await services.files.format(
+      state.active_tab.path,
+      state.active_tab.content,
+      [ta.selectionStart, ta.selectionEnd],
+    );
+
+    await services.files.saveFileContent(state.active_tab.path, content);
+
+    setState("active_tab", {
+      ...state.active_tab,
+      content: content,
+      defaultContent: content,
+    });
+
+    return { content, caret };
+  };
+
   useEffect(() => {
     if (path) handleSelect(path);
   }, [path, defaultContent]);
@@ -79,6 +108,7 @@ const Content = () => {
   return (
     <EditorContent
       info={FileService.getFileInfo(root, path)}
+      handleSave={handleSave}
       content={state.active_tab?.content || ""}
       setContent={(v) =>
         setState({

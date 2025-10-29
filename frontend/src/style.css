@@ -89,6 +89,27 @@
   }
 }
 
+@layer utilities {
+  @keyframes loader-dots {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
+}
+
 @layer components {
   .text-editor-wrapper,
   .w-tc-editor,
@@ -101,11 +122,11 @@
   }
 
   .text-editor-wrapper .w-tc-editor .w-tc-editor-text {
-    @apply pl-[calc(3ch+1rem)]! py-0! pt-6!;
+    @apply pl-[calc(3ch+1rem)]! py-0! pt-6! [tab-size:2]!;
   }
 
   .text-editor-wrapper .w-tc-editor .w-tc-editor-preview {
-    @apply p-0!;
+    @apply p-0! [tab-size:2]!;
   }
 
   .text-editor-wrapper .w-tc-editor code.code-highlight,
@@ -127,26 +148,5 @@
 
   .text-editor-wrapper .w-tc-editor .line-number {
     @apply before:inline-block before:w-[3ch] before:mr-4 before:content-[attr(line)] before:text-text-muted before:font-display before:text-end;
-  }
-}
-
-@layer utilities {
-  @keyframes loader-dots {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    40% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    80% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(0);
-      opacity: 0;
-    }
   }
 }

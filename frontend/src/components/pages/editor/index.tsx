@@ -79,7 +79,7 @@ EditorContent.loader = async ({ request }: LoaderFunctionArgs) => {
 
 EditorContent.Fallback = () => (
   <div className="h-full w-full flex items-center justify-center">
-    <div className="bg-dark-tint text-text rounded-2xl p-8 shadow-dark shadow-lg w-md">
+    <div className="bg-dark-tint backdrop-blur-xs text-text rounded-2xl p-8 shadow-dark shadow-lg w-md">
       <div className="flex flex-col justify-center items-center gap-4">
         <svg className="size-12 text-neutral-200" viewBox="0 0 36 36">
           <use href={`${logoIcon}#logo-icon`} />

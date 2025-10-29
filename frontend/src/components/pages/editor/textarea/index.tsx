@@ -28,7 +28,7 @@ export const Textarea = () => {
   return (
     <main
       className={cn(
-        "text-neutral-200 select-none flex-1 flex flex-col items-center justify-between gap-4 transition-[padding] overscroll-none overflow-hidden duration-300 pt-4 pr-4",
+        "text-text select-none flex-1 flex flex-col items-center justify-between gap-4 transition-[padding] overscroll-none overflow-hidden duration-300 pt-4 pr-4",
         state.sidebar ? "pl-76" : "pl-4",
       )}
     >
@@ -74,7 +74,7 @@ export const Textarea = () => {
               name="Search"
               icon="Search"
               variant="ghost"
-              className="data-[state=open]:bg-dark-tint"
+              className="data-[state=open]:bg-dark-tint data-[state=open]:backdrop-blur-xs"
               tooltip-title={`Search in ${title}`}
               tooltip-position="bottom"
             />
@@ -90,7 +90,7 @@ export const Textarea = () => {
               <MenubarTrigger asChild>
                 <IconButton
                   icon="ChevronDown"
-                  className="data-[state=open]:bg-dark-tint transition-colors"
+                  className="data-[state=open]:bg-dark-tint data-[state=open]:backdrop-blur-xs transition-colors"
                 />
               </MenubarTrigger>
               <MenubarContent align="end">

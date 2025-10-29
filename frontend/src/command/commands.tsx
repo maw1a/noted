@@ -8,7 +8,7 @@ class Command implements ICommand {
   public label: string;
   public id: string;
   public shortcut: Array<string>;
-  public handler: <T>(args: StoreContextType & T) => void;
+  public handler: <T>(args: StoreContextType & T) => void | Promise<void>;
   public isAvailable: boolean = true;
   public isVisible: boolean = true;
 
@@ -98,7 +98,7 @@ export const editorNotespaceFileBookmark = new Command({
   label: "Bookmark Note",
   shortcut: ["Meta", "D"],
   handler: ({ state, setState }) => {
-    if (!state.active_tab) return state;
+    if (!state.active_tab) return;
     const bmrks = new Set([...state.bookmarks]);
     if (bmrks.has(state.active_tab.path)) bmrks.delete(state.active_tab.path);
     else bmrks.add(state.active_tab.path);
@@ -122,8 +122,17 @@ export const editorNotespaceFileSave = new Command({
   id: "editor.notespace.file.save",
   label: "Create New File",
   shortcut: ["Meta", "S"],
-  handler: ({ state }) => {
+  handler: async ({ state, setState, services }) => {
     if (!state.active_tab) return;
-    console.log("opened:", state.active_tab.path);
+
+    await services.files.saveFileContent(
+      state.active_tab.path,
+      state.active_tab.content,
+    );
+
+    setState("active_tab", {
+      ...state.active_tab,
+      defaultContent: state.active_tab.content,
+    });
   },
 });

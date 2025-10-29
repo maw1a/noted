@@ -4,6 +4,7 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeRewrite from "rehype-rewrite";
 import type { Root, RootContent } from "hast";
 import type { FileInfo } from "@/services";
+import { getKeyCombination } from "@/utils/key-combination";
 
 function getCaretLineIndex(value: string, caret: number): number {
   // Clamp caret in range
@@ -25,6 +26,13 @@ export interface EditorProps {
   value: string;
   info: FileInfo;
   placeholder?: string;
+  handleSave: (ev: React.KeyboardEvent<HTMLTextAreaElement>) => Promise<
+    | {
+        content: string;
+        caret: [number, number];
+      }
+    | undefined
+  >;
   onChange?: (value: string) => void;
   padding?: number;
   minHeight?: number;
@@ -37,12 +45,32 @@ export const Editor: React.FC<EditorProps> = ({
   value,
   info,
   placeholder = "Start typing…",
+  handleSave,
   onChange: _onChange,
   style,
   colorMode,
 }) => {
   const [caretLine, setCaretLine] = React.useState(0);
   const language = info.filetype as Language;
+
+  const handleKeyDown = async (
+    ev: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    const { keyCombination } = getKeyCombination(ev);
+
+    const saveKeyCombination = ["Meta", "S"].toSorted().join();
+    if (keyCombination === saveKeyCombination) {
+      const saved = await handleSave(ev);
+      if (saved) {
+        const [start, end] = saved.caret;
+        (ev.target as HTMLTextAreaElement).selectionStart = start;
+        (ev.target as HTMLTextAreaElement).selectionEnd = end;
+      }
+      return;
+    }
+
+    handleAnyTextEvent(ev);
+  };
 
   // We need to read selectionStart from the underlying textarea.
   // CodeEditor forwards onKeyUp/onClick/onChange, so we can update caretLine there.
@@ -75,7 +103,9 @@ export const Editor: React.FC<EditorProps> = ({
         onChange={handleChange}
         onKeyUp={handleAnyTextEvent}
         onClick={handleAnyTextEvent}
-        onKeyDown={handleAnyTextEvent}
+        onKeyDown={(ev) => {
+          handleKeyDown(ev);
+        }}
         rehypePlugins={[
           [rehypePrism, { ignoreMissing: true, showLineNumbers: true }],
           [
@@ -95,7 +125,7 @@ export const Editor: React.FC<EditorProps> = ({
                     } else {
                       const cls = node.properties.className as string[];
                       node.properties.className = cls.filter(
-                        (c: string) => c !== "bg-neutral-200",
+                        (c: string) => c !== "bg-text",
                       );
                     }
                   }

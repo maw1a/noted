@@ -1,6 +1,11 @@
 import { OpenRepoDirectory } from "@go/noted/editor";
 import { GetFileTree, GetFileData, SaveFileData } from "@go/noted/scanner";
+
 import * as prettier from "prettier";
+import babel from "prettier/plugins/babel";
+import estree from "prettier/plugins/estree";
+import markdown from "prettier/plugins/markdown";
+import postcss from "prettier/plugins/postcss";
 
 export type Language = "markdown" | "json" | "css";
 export type FileInfo = {
@@ -13,8 +18,9 @@ export type FileInfo = {
 };
 
 const prettierConfig: prettier.Options = {
-  useTabs: true,
+  useTabs: false,
   endOfLine: "lf",
+  plugins: [babel, estree, markdown, postcss],
 };
 
 export class FileService {
@@ -32,6 +38,53 @@ export class FileService {
 
   public async saveFileContent(path: string, content: string) {
     await SaveFileData(path, content);
+  }
+
+  format(path: string, content: string): Promise<{ content: string }>;
+  format(
+    path: string,
+    content: string,
+    caret: number,
+  ): Promise<{ content: string; caret: number }>;
+  format(
+    path: string,
+    content: string,
+    caret: [number, number],
+  ): Promise<{ content: string; caret: [number, number] }>;
+  public async format(
+    path: string,
+    content: string,
+    caret?: number | [number, number],
+  ) {
+    const { filetype } = FileService.getFileInfo(this.root, path);
+    if (typeof caret !== "undefined") {
+      function formatWithCursor(cursorOffset: number) {
+        return prettier.formatWithCursor(content, {
+          cursorOffset: cursorOffset,
+          filepath: path,
+          parser: filetype,
+          ...prettierConfig,
+        });
+      }
+
+      if (Array.isArray(caret)) {
+        const [start, end] = await Promise.all(caret.map(formatWithCursor));
+        return {
+          content: start.formatted,
+          caret: [start.cursorOffset, end.cursorOffset],
+        };
+      }
+
+      const formatted = await formatWithCursor(caret);
+      return { caret: formatted.cursorOffset, content: formatted.formatted };
+    }
+
+    const formatted = await prettier.format(content, {
+      filepath: path,
+      parser: filetype,
+      ...prettierConfig,
+    });
+    return { content: formatted };
   }
 
   static async openRepoDirectory(root: string) {
@@ -55,25 +108,5 @@ export class FileService {
       return { filename, rel, parent, path, ext, filetype: "markdown" };
     }
     return { filename: abs, rel, parent, path, ext, filetype: ext! };
-  }
-
-  static async formatFileContent(
-    {
-      value,
-      caret,
-    }: {
-      value: string;
-      caret?: number;
-    },
-    language: Language | string,
-  ) {
-    const { cursorOffset, formatted } = await prettier.formatWithCursor(value, {
-      cursorOffset: caret || 0,
-      ...(language.includes(".")
-        ? { parser: language }
-        : { filepath: language }),
-      ...prettierConfig,
-    });
-    return { value: formatted, caret: cursorOffset };
   }
 }

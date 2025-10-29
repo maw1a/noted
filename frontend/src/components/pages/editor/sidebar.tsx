@@ -14,7 +14,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        "absolute left-0 top-0 bottom-0 flex flex-col h-full w-2xs py-4 text-text bg-dark-tint text-display gap-y-4 shadow-dark shadow-xl transition-transform duration-300",
+        "absolute left-0 top-0 bottom-0 flex flex-col h-full w-2xs py-4 text-text bg-dark-tint backdrop-blur-xs text-display gap-y-4 shadow-dark shadow-xl transition-transform duration-300",
         !state.sidebar && "-translate-x-80",
       )}
     >
