@@ -2,9 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 )
@@ -76,6 +78,38 @@ func (s *Scanner) SaveFileData(path string, content string) error {
 		log.Printf("failed to save file \"%s\" error: %v", path, err)
 		return err
 	}
+
+	return nil
+}
+
+func (s *Scanner) CreateNewDir(path string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		log.Printf("failed to create parent directory: %w", err)
+		return err
+	}
+	return nil
+}
+
+func (s *Scanner) CreateNewFile(path string, content string) error {
+	if err := s.CreateNewDir(filepath.Dir(path)); err != nil {
+		return err
+	}
+
+	// Create (or truncate) file; use os.OpenFile for more control
+	f, err := os.Create(path)
+	if err != nil {
+		fmt.Printf("failed to create file: %w", err)
+		return err
+	}
+	defer f.Close()
+
+	// Optionally write initial content
+	if _, err := f.WriteString(content); err != nil {
+		fmt.Printf("failed to write to file: %w", err)
+		return err
+	}
+
+	fmt.Println("File created:", filepath.Clean(path))
 
 	return nil
 }
@@ -267,10 +301,5 @@ func isHiddenName(name string) bool {
 }
 
 func shouldPrune(name string, pruneList []string) bool {
-	for _, p := range pruneList {
-		if name == p {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(pruneList, name)
 }

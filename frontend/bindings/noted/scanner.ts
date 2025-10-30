@@ -9,6 +9,14 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
+export function CreateNewDir(path: string): $CancellablePromise<void> {
+    return $Call.ByID(1557940023, path);
+}
+
+export function CreateNewFile(path: string, content: string): $CancellablePromise<void> {
+    return $Call.ByID(2328132982, path, content);
+}
+
 export function GetFileData(path: string): $CancellablePromise<string> {
     return $Call.ByID(118238128, path);
 }
