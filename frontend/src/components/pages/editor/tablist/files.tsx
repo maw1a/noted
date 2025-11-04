@@ -1,19 +1,29 @@
-import { ComponentProps, useMemo } from "react";
+import { ComponentProps, useMemo, useRef } from "react";
 
 import { Icon } from "@/components/icon";
 import { useStore } from "@/components/store";
-import { Tree, File, Folder } from "@/components/ui/file-tree";
+import {
+  Tree,
+  File,
+  Folder,
+  NodeType,
+  NewFileNode,
+  INewFileNode,
+} from "@/components/ui/file-tree";
 import { FileService } from "@/services";
 
 import type { Node } from "@go/noted";
 
-enum NodeType {
-  File = "file",
-  Dir = "dir",
-  Symlink = "symlink",
-}
-
 const nodesFilter = (node: Node) => node.name === ".noted" || !node.isHidden;
+const expandPathItems = (root: string, path: string) => {
+  const rel = path.replace(root, "");
+  let paths: Array<string> = [];
+  const parts = rel.split("/");
+  for (let i = 1; i < parts.length; i++) {
+    paths.push(root + parts.slice(0, i).join("/"));
+  }
+  return paths;
+};
 
 const Symlink = (props: ComponentProps<typeof Folder>) => {
   return (
@@ -29,6 +39,7 @@ const Symlink = (props: ComponentProps<typeof Folder>) => {
 };
 
 const FileNode = ({ root, node }: { root: string; node: Node }) => {
+  const newFileNodeRef = useRef<INewFileNode>(null!);
   const children = useMemo(
     () =>
       node.children
@@ -65,6 +76,7 @@ const FileNode = ({ root, node }: { root: string; node: Node }) => {
 
   return (
     <Folder value={node.path} id={node.path} element={fileinfo.filename}>
+      <NewFileNode ref={newFileNodeRef} dir={node.path} />
       {children}
     </Folder>
   );
@@ -72,17 +84,12 @@ const FileNode = ({ root, node }: { root: string; node: Node }) => {
 
 export const Files = () => {
   const { state } = useStore();
+
   const expandedItems = useMemo(() => {
     if (!state.root) return [];
-    if (state.active_tab) {
-      const rel = state.active_tab.path.replace(state.root, "");
-      let paths: Array<string> = [];
-      const parts = rel.split("/");
-      for (let i = 1; i < parts.length; i++) {
-        paths.push(state.root + parts.slice(0, i).join("/"));
-      }
-      return paths;
-    } else return [state.root];
+    if (state.active_tab)
+      return expandPathItems(state.root, state.active_tab.path);
+    else return [state.root];
   }, [state.root, state.active_tab]);
 
   return (
@@ -91,10 +98,16 @@ export const Files = () => {
         <div className="flex justify-between items-center">
           <p className="py-0.5">Files</p>
           <div className="flex gap-2">
-            <button className="p-1 text-text-muted hover:text-text transition-colors">
+            <button
+              className="p-1 text-text-muted hover:text-text transition-colors"
+              onClick={() => {}}
+            >
               <Icon name="FolderPlus" size={16} strokeWidth={2} />
             </button>
-            <button className="p-1 text-text-muted hover:text-text transition-colors">
+            <button
+              className="p-1 text-text-muted hover:text-text transition-colors"
+              onClick={() => {}}
+            >
               <Icon name="FilePlus" size={16} strokeWidth={2} />
             </button>
           </div>

@@ -98,14 +98,14 @@ func (s *Scanner) CreateNewFile(path string, content string) error {
 	// Create (or truncate) file; use os.OpenFile for more control
 	f, err := os.Create(path)
 	if err != nil {
-		fmt.Printf("failed to create file: %w", err)
+		fmt.Printf("failed to create file: %v", err)
 		return err
 	}
 	defer f.Close()
 
 	// Optionally write initial content
 	if _, err := f.WriteString(content); err != nil {
-		fmt.Printf("failed to write to file: %w", err)
+		fmt.Printf("failed to write to file: %v", err)
 		return err
 	}
 

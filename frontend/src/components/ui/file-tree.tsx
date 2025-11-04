@@ -1,9 +1,13 @@
 import React, {
   createContext,
+  FC,
   forwardRef,
+  Ref,
   useCallback,
   useContext,
   useEffect,
+  useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
@@ -12,6 +16,8 @@ import { cn } from "../../utils/cn";
 import { Button } from "./button";
 import { ScrollArea } from "./scroll-area";
 import { ExactLink } from "../link";
+import { Triangle } from "../icon";
+import { getKeyCombination } from "@/utils/key-combination";
 
 type TreeViewElement = {
   id: string;
@@ -197,22 +203,6 @@ const TreeIndicator = forwardRef<
 
 TreeIndicator.displayName = "TreeIndicator";
 
-const Triangle = (props: React.ComponentProps<"svg">) => (
-  <svg
-    width="8"
-    height="4"
-    viewBox="0 0 8 4"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      d="M6.79289 0C7.23835 0 7.46143 0.538571 7.14645 0.853553L4.35355 3.64645C4.15829 3.84171 3.84171 3.84171 3.64645 3.64645L0.853552 0.853553C0.53857 0.53857 0.761654 0 1.20711 0H6.79289Z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
 type FolderProps = {
   expandedItems?: string[];
   element: React.ReactNode;
@@ -391,5 +381,74 @@ const CollapseButton = forwardRef<
 });
 
 CollapseButton.displayName = "CollapseButton";
+
+export interface INewFileNode {
+  createNew: (type: NodeType) => void;
+}
+
+export enum NodeType {
+  File = "file",
+  Dir = "dir",
+  Symlink = "symlink",
+}
+
+export const NewFileNode: FC<{
+  ref: Ref<INewFileNode>;
+  dir: string;
+}> = ({ ref }) => {
+  const [newNode, setNewNode] = useState<{
+    type: NodeType;
+    path: string;
+  } | null>(null);
+  const localRef = useRef<HTMLInputElement>(null!);
+
+  useImperativeHandle(ref, () => ({
+    createNew: (type: NodeType) => {
+      setNewNode({ type, path: "" });
+    },
+  }));
+
+  useEffect(() => {
+    if (newNode) localRef.current?.focus();
+
+    const onBlur = () => {
+      setNewNode(null);
+    };
+
+    localRef.current?.addEventListener("blur", onBlur);
+
+    return () => {
+      localRef.current?.removeEventListener("blur", onBlur);
+    };
+  }, [newNode]);
+
+  if (newNode)
+    return (
+      <div className="flex items-center justify-start w-full gap-2">
+        <div className="size-3 text-text-muted flex items-center justify-center -rotate-90">
+          {newNode.type === NodeType.Dir && <Triangle className="scale-150" />}
+        </div>
+        <input
+          ref={localRef}
+          id="new-filenode"
+          type="text"
+          className="px-1.5 py-1 text-display rounded-md"
+          placeholder={
+            newNode.type === "file" ? "File name..." : "Folder name..."
+          }
+          onChange={(e) =>
+            setNewNode((p) => (p ? { ...p, path: e.target.value } : p))
+          }
+          onKeyDown={(e) => {
+            const { keyCombination } = getKeyCombination(e);
+            if (keyCombination === "Escape") {
+              e.currentTarget.blur();
+            }
+          }}
+        />
+      </div>
+    );
+  return null;
+};
 
 export { CollapseButton, File, Folder, Tree, type TreeViewElement };
