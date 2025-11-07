@@ -1,4 +1,4 @@
-import { ComponentProps, useMemo, useRef } from "react";
+import { ComponentProps, ReactNode, useMemo, useRef } from "react";
 
 import { Icon } from "@/components/icon";
 import { useStore } from "@/components/store";
@@ -25,18 +25,16 @@ const expandPathItems = (root: string, path: string) => {
   return paths;
 };
 
-const Symlink = (props: ComponentProps<typeof Folder>) => {
-  return (
-    <Folder
-      {...props}
-      element={
-        <>
-          {props.element} <Icon name="ArrowUpRight" size={16} />
-        </>
-      }
-    />
-  );
-};
+const Symlink = (props: ComponentProps<typeof Folder>) => (
+  <Folder
+    {...props}
+    element={
+      <>
+        {props.element} <Icon name="ArrowUpRight" size={16} />
+      </>
+    }
+  />
+);
 
 const FileNode = ({ root, node }: { root: string; node: Node }) => {
   const newFileNodeRef = useRef<INewFileNode>(null!);

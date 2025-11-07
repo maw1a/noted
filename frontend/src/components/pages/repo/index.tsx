@@ -63,7 +63,7 @@ const Repo = () => {
           <div className="flex flex-col items-stretch w-full gap-2 font-medium">
             <Button disabled={action !== null} onClick={createNew}>
               {action === "new" ? (
-                <div className="flex w-full justify-center">
+                <div className="flex w-full justify-center py-1">
                   <Loader />
                 </div>
               ) : (
@@ -79,7 +79,7 @@ const Repo = () => {
             </Button>
             <Button disabled={action !== null} onClick={cloneRepo}>
               {action === "clone" ? (
-                <div className="flex w-full justify-center">
+                <div className="flex w-full justify-center py-1">
                   <Loader />
                 </div>
               ) : (
@@ -95,7 +95,7 @@ const Repo = () => {
             </Button>
             <Button disabled={action !== null} onClick={openExisting}>
               {action === "open" ? (
-                <div className="flex w-full justify-center">
+                <div className="flex w-full justify-center py-1">
                   <Loader />
                 </div>
               ) : (
