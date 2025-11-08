@@ -1,10 +1,11 @@
-package main
+package editor
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
+	"noted/pkg/ui"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -46,7 +47,7 @@ type EditorState struct {
 	rootPath string
 }
 
-func NewEditorService() *Editor {
+func newEditor() *Editor {
 	return &Editor{
 		ctx: context.Background(),
 	}
@@ -273,7 +274,7 @@ func createNoteRepo(dir string) (bool, []error) {
 func createEditor(path string) *application.WebviewWindow {
 	app := application.Get()
 
-	window := EditorWindow(app, path)
+	window := ui.EditorWindow(app, path, getTitle(path))
 
 	window.Center()
 
@@ -283,6 +284,27 @@ func createEditor(path string) *application.WebviewWindow {
 	}
 
 	return window
+}
+
+func getTitle(path string) string {
+	rootDir := ""
+	if path != "" {
+		rootDir = filepath.Base(path)
+	} else {
+		rootDir, _ = os.Getwd()
+		rootDir = filepath.Base(rootDir)
+	}
+	title := rootDir
+
+	configPath := filepath.Join(path, CONFIG_PATH)
+	if data, err := os.ReadFile(configPath); err == nil {
+		var config Config
+		if err := json.Unmarshal(data, &config); err == nil && config.Name != "" {
+			title = config.Name
+		}
+	}
+
+	return title
 }
 
 func runGitInit(dir string) error {

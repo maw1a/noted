@@ -10,25 +10,25 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 export function CreateNewDir(path: string): $CancellablePromise<void> {
-    return $Call.ByID(1557940023, path);
+    return $Call.ByID(3508882504, path);
 }
 
 export function CreateNewFile(path: string, content: string): $CancellablePromise<void> {
-    return $Call.ByID(2328132982, path, content);
+    return $Call.ByID(3344246879, path, content);
 }
 
 export function GetFileData(path: string): $CancellablePromise<string> {
-    return $Call.ByID(118238128, path);
+    return $Call.ByID(152262409, path);
 }
 
 export function GetFileTree(root: string): $CancellablePromise<$models.Node> {
-    return $Call.ByID(295743568, root).then(($result: any) => {
+    return $Call.ByID(2870357009, root).then(($result: any) => {
         return $$createType0($result);
     });
 }
 
 export function SaveFileData(path: string, content: string): $CancellablePromise<void> {
-    return $Call.ByID(2669828497, path, content);
+    return $Call.ByID(2148566318, path, content);
 }
 
 // Private type creation functions

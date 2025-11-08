@@ -1,4 +1,4 @@
-package main
+package file
 
 import (
 	"errors"
@@ -35,7 +35,7 @@ type Scanner struct {
 	MaxDepth          int      // 0 means unlimited; 1 means only root; 2 includes root children, etc.
 }
 
-func NewScanner() *Scanner {
+func newScanner() *Scanner {
 	return &Scanner{
 		ResolveSymlinks:   true,
 		FollowSymlinkDirs: false, // set true to traverse into symlinked directories with cycle protection

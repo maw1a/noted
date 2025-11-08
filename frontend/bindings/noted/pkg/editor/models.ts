@@ -5,10 +5,6 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore: Unused imports
-import * as time$0 from "../time/models.js";
-
 export class Config {
     "name": string;
     "description"?: string;
@@ -59,57 +55,6 @@ export class EditorState {
     }
 }
 
-export class Node {
-    "name": string;
-    "path": string;
-
-    /**
-     * "file" | "dir" | "symlink"
-     */
-    "type": string;
-    "size": number;
-    "modified": time$0.Time;
-    "children"?: Node[];
-    "isHidden": boolean;
-    "extension"?: string;
-
-    /** Creates a new Node instance. */
-    constructor($$source: Partial<Node> = {}) {
-        if (!("name" in $$source)) {
-            this["name"] = "";
-        }
-        if (!("path" in $$source)) {
-            this["path"] = "";
-        }
-        if (!("type" in $$source)) {
-            this["type"] = "";
-        }
-        if (!("size" in $$source)) {
-            this["size"] = 0;
-        }
-        if (!("modified" in $$source)) {
-            this["modified"] = null;
-        }
-        if (!("isHidden" in $$source)) {
-            this["isHidden"] = false;
-        }
-
-        Object.assign(this, $$source);
-    }
-
-    /**
-     * Creates a new Node instance from a string or object.
-     */
-    static createFrom($$source: any = {}): Node {
-        const $$createField5_0 = $$createType2;
-        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
-        if ("children" in $$parsedSource) {
-            $$parsedSource["children"] = $$createField5_0($$parsedSource["children"]);
-        }
-        return new Node($$parsedSource as Partial<Node>);
-    }
-}
-
 export class Notespace {
     "config": Config | null;
     "path": string;
@@ -130,7 +75,7 @@ export class Notespace {
      * Creates a new Notespace instance from a string or object.
      */
     static createFrom($$source: any = {}): Notespace {
-        const $$createField0_0 = $$createType4;
+        const $$createField0_0 = $$createType2;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("config" in $$parsedSource) {
             $$parsedSource["config"] = $$createField0_0($$parsedSource["config"]);
@@ -141,7 +86,5 @@ export class Notespace {
 
 // Private type creation functions
 const $$createType0 = $Create.Map($Create.Any, $Create.Any);
-const $$createType1 = Node.createFrom;
-const $$createType2 = $Create.Array($$createType1);
-const $$createType3 = Config.createFrom;
-const $$createType4 = $Create.Nullable($$createType3);
+const $$createType1 = Config.createFrom;
+const $$createType2 = $Create.Nullable($$createType1);

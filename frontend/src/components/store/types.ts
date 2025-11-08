@@ -1,5 +1,6 @@
 import type { NotespaceService, FileService } from "@/services";
-import type { Config, Node } from "@go/noted";
+import type { Node } from "@go/noted/pkg/file";
+import type { Config } from "@go/noted/pkg/editor";
 
 export type State = {
   loading: boolean;

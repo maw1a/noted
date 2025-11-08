@@ -1,5 +1,5 @@
-import { OpenRepoDirectory } from "@go/noted/editor";
-import { GetFileTree, GetFileData, SaveFileData } from "@go/noted/scanner";
+import { Editor } from "@go/noted/pkg/editor";
+import { Scanner } from "@go/noted/pkg/file";
 
 import * as prettier from "prettier";
 import babel from "prettier/plugins/babel";
@@ -27,17 +27,17 @@ export class FileService {
   constructor(private readonly root: string) {}
 
   public async getFileTree() {
-    const rootNode = await GetFileTree(this.root);
+    const rootNode = await Scanner.GetFileTree(this.root);
     return rootNode;
   }
 
   public async getFileContent(path: string) {
-    const content = await GetFileData(path);
+    const content = await Scanner.GetFileData(path);
     return content;
   }
 
   public async saveFileContent(path: string, content: string) {
-    await SaveFileData(path, content);
+    await Scanner.SaveFileData(path, content);
   }
 
   format(path: string, content: string): Promise<{ content: string }>;
@@ -88,7 +88,7 @@ export class FileService {
   }
 
   static async openRepoDirectory(root: string) {
-    const dir = await OpenRepoDirectory(root);
+    const dir = await Editor.OpenRepoDirectory(root);
     return dir;
   }
 

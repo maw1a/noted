@@ -10,33 +10,33 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 import * as $models from "./models.js";
 
 export function CreateNewRepo(): $CancellablePromise<string> {
-    return $Call.ByID(3072097127);
+    return $Call.ByID(4245064457);
 }
 
 export function GetCurrentNotespace(): $CancellablePromise<$models.Notespace> {
-    return $Call.ByID(616798964).then(($result: any) => {
+    return $Call.ByID(2567671154).then(($result: any) => {
         return $$createType0($result);
     });
 }
 
 export function GetEditorState(): $CancellablePromise<$models.EditorState> {
-    return $Call.ByID(2140924809).then(($result: any) => {
+    return $Call.ByID(1387844055).then(($result: any) => {
         return $$createType1($result);
     });
 }
 
 export function GetNotespaceFromPaths(paths: string[]): $CancellablePromise<$models.Notespace[]> {
-    return $Call.ByID(65555435, paths).then(($result: any) => {
+    return $Call.ByID(1883388617, paths).then(($result: any) => {
         return $$createType2($result);
     });
 }
 
 export function OpenExisitingRepo(): $CancellablePromise<string> {
-    return $Call.ByID(2582740457);
+    return $Call.ByID(1580518959);
 }
 
 export function OpenRepoDirectory(dir: string): $CancellablePromise<string> {
-    return $Call.ByID(1950941394, dir);
+    return $Call.ByID(2311084740, dir);
 }
 
 // Private type creation functions

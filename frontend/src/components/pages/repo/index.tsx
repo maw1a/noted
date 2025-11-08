@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import app from "@/utils/constants/app";
 
-import { CreateNewRepo, OpenExisitingRepo } from "@go/noted/editor";
+import { Editor } from "@go/noted/pkg/editor";
 
 import LogoIcon from "~/images/logo-icon.svg?react";
 import { Icon } from "@/components/icon";
@@ -18,9 +18,9 @@ const Repo = () => {
 
   function createAction(type: Action) {
     const handler = {
-      new: CreateNewRepo,
-      open: OpenExisitingRepo,
-      clone: OpenExisitingRepo,
+      new: Editor.CreateNewRepo,
+      open: Editor.OpenExisitingRepo,
+      clone: Editor.OpenExisitingRepo,
     }[type];
 
     return async () => {

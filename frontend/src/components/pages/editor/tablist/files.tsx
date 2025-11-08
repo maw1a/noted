@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/file-tree";
 import { FileService } from "@/services";
 
-import type { Node } from "@go/noted";
+import type { Node } from "@go/noted/pkg/file";
 
 const nodesFilter = (node: Node) => node.name === ".noted" || !node.isHidden;
 const expandPathItems = (root: string, path: string) => {
