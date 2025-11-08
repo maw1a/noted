@@ -10,7 +10,7 @@ import { Textarea } from "./textarea";
 import { getServices } from "@/services";
 import { getCommandFromEvent } from "@/command";
 
-import logoIcon from "@/assets/images/logo-icon.svg";
+import LogoIcon from "~/images/logo-icon.svg?react";
 
 const EditorContent = () => {
   const loaderData = useLoaderData<LoaderData<typeof EditorContent.loader>>();
@@ -81,9 +81,7 @@ EditorContent.Fallback = () => (
   <div className="h-full w-full flex items-center justify-center">
     <div className="bg-dark-tint backdrop-blur-xs text-text rounded-2xl p-8 shadow-dark shadow-lg w-md">
       <div className="flex flex-col justify-center items-center gap-4">
-        <svg className="size-12 text-neutral-200" viewBox="0 0 36 36">
-          <use href={`${logoIcon}#logo-icon`} />
-        </svg>
+        <LogoIcon className="size-12 text-neutral-200" />
         <div className="flex flex-col items-center gap-1">
           <p className="text-text text-display text-center">
             Setting up your notespace

@@ -37,7 +37,6 @@ const Symlink = (props: ComponentProps<typeof Folder>) => (
 );
 
 const FileNode = ({ root, node }: { root: string; node: Node }) => {
-  const newFileNodeRef = useRef<INewFileNode>(null!);
   const children = useMemo(
     () =>
       node.children
@@ -74,7 +73,6 @@ const FileNode = ({ root, node }: { root: string; node: Node }) => {
 
   return (
     <Folder value={node.path} id={node.path} element={fileinfo.filename}>
-      <NewFileNode ref={newFileNodeRef} dir={node.path} />
       {children}
     </Folder>
   );

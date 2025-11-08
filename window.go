@@ -70,6 +70,11 @@ func EditorWindow(app *application.App, path string) *application.WebviewWindow 
 			TitleBar:                application.MacTitleBarHiddenInset,
 			Backdrop:                application.MacBackdropTranslucent,
 			Appearance:              application.NSAppearanceNameDarkAqua,
+			WebviewPreferences: application.MacWebviewPreferences{
+				TextInteractionEnabled: u.False,
+				TabFocusesLinks: u.False,
+				AllowsBackForwardNavigationGestures: u.False,
+			},
 		},
 		URL: "/editor?root=" + path,
 	})

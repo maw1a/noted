@@ -6,9 +6,9 @@ import { toast } from "sonner";
 
 import app from "@/utils/constants/app";
 
-import { CreateNewRepo, OpenExisitingRepo } from "@go/noted/editor.js";
+import { CreateNewRepo, OpenExisitingRepo } from "@go/noted/editor";
 
-import logoIcon from "@/assets/images/logo-icon.svg";
+import LogoIcon from "~/images/logo-icon.svg?react";
 import { Icon } from "@/components/icon";
 import { Outlet } from "react-router";
 import { Action, RepoContext } from "./context";
@@ -50,9 +50,7 @@ const Repo = () => {
           className="flex-1 bg-neutral-900 text-neutral-200 select-none py-16 px-14 flex flex-col items-center justify-between"
         >
           <div className="flex flex-col gap-4 items-center justify-center">
-            <svg className="size-22 text-text" viewBox="0 0 36 36">
-              <use href={`${logoIcon}#logo-icon`} />
-            </svg>
+            <LogoIcon className="size-22 text-text" />
             <div className="flex flex-col items-center">
               <h1 className="text-4xl font-bold">{app.title}</h1>
               <p className="text-mini text-neutral-400">

@@ -11,6 +11,7 @@ import React, {
   useState,
 } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import * as Portal from "@radix-ui/react-portal";
 
 import { cn } from "../../utils/cn";
 import { Button } from "./button";
@@ -26,10 +27,14 @@ type TreeViewElement = {
   children?: TreeViewElement[];
 };
 
+type ContextMenu = { id: string; x: number; y: number };
+
 type TreeContextProps = {
   selectedId: string | undefined;
   expandedItems: string[] | undefined;
+  contextMenu: ContextMenu | undefined;
   indicator: boolean;
+  handleContextMenu: (args: ContextMenu | undefined) => void;
   handleExpand: (id: string) => void;
   selectItem: (id: string) => void;
   setExpandedItems?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
@@ -81,6 +86,10 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
     const [expandedItems, setExpandedItems] = useState<string[] | undefined>(
       initialExpandedItems,
     );
+    const [contextMenu, setContextMenu] = useState<ContextMenu | undefined>(
+      undefined,
+    );
+    const menuRef = useRef<HTMLDivElement>(null!);
 
     const selectItem = useCallback((id: string) => {
       setSelectedId(id);
@@ -93,6 +102,10 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
         }
         return [...(prev ?? []), id];
       });
+    }, []);
+
+    const handleContextMenu = useCallback((args: ContextMenu | undefined) => {
+      setContextMenu(args);
     }, []);
 
     const expandSpecificTargetedElements = useCallback(
@@ -138,6 +151,20 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
       }
     }, [initialSelectedId, elements]);
 
+    useEffect(() => {
+      const handleClickOutside = (e: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+          setContextMenu(undefined);
+        }
+      };
+
+      if (contextMenu) {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () =>
+          document.removeEventListener("mousedown", handleClickOutside);
+      }
+    }, [contextMenu]);
+
     const direction = dir === "rtl" ? "rtl" : "ltr";
 
     return (
@@ -145,7 +172,9 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
         value={{
           selectedId,
           expandedItems,
+          contextMenu,
           handleExpand,
+          handleContextMenu,
           selectItem,
           setExpandedItems,
           indicator,
@@ -174,6 +203,20 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
               {children}
             </AccordionPrimitive.Root>
           </ScrollArea>
+          {contextMenu && (
+            <Portal.Root>
+              <div
+                ref={menuRef}
+                className="fixed z-50 min-w-56 bg-dark-tint backdrop-blur-xs rounded-sm shadow-md py-1 animate-in fade-in-0 zoom-in-95"
+                style={{
+                  top: `${contextMenu.y}px`,
+                  left: `${contextMenu.x}px`,
+                }}
+              >
+                Context Menu
+              </div>
+            </Portal.Root>
+          )}
         </div>
       </TreeContext.Provider>
     );
@@ -229,10 +272,12 @@ const Folder = forwardRef<
     const {
       direction,
       handleExpand,
+      handleContextMenu,
       expandedItems,
       indicator,
       setExpandedItems,
     } = useTree();
+    const newFileNodeRef = useRef<INewFileNode>(null!);
 
     return (
       <AccordionPrimitive.Item
@@ -253,6 +298,9 @@ const Folder = forwardRef<
             },
           )}
           disabled={!isSelectable}
+          onContextMenu={(e) =>
+            handleContextMenu({ x: e.clientX, y: e.clientY, id: value })
+          }
           onClick={() => handleExpand(value)}
         >
           <div
@@ -280,6 +328,7 @@ const Folder = forwardRef<
             }}
           >
             {children}
+            <NewFileNode ref={newFileNodeRef} dir={value} />
           </AccordionPrimitive.Root>
         </AccordionPrimitive.Content>
       </AccordionPrimitive.Item>
