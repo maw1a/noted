@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useStore } from "@/components/store";
 import { cn } from "@/utils/cn";
@@ -15,15 +15,38 @@ import { KeyIcon } from "@/components/icon";
 import { CommandPalette } from "@/components/dialogs/command-palette";
 import { Combobox } from "@/components/ui/combobox";
 import { Tablist } from "./tablist";
+import { commands } from "@/command";
 
 export const Textarea = () => {
-  const { state, setState } = useStore();
+  const { state, setState, services } = useStore();
   const navigate = useNavigate();
 
   const title = useMemo(
     () => (state.config ? state.config.name : state.root.split("/").pop()),
     [state.config, state.root],
   );
+
+  const handler = useCallback(async () => {
+    if (!state.active_tab) return;
+
+    await services.files.saveFileContent(
+      state.active_tab.path,
+      state.active_tab.content,
+    );
+
+    setState("active_tab", {
+      ...state.active_tab,
+      defaultContent: state.active_tab.content,
+    });
+  }, [state.active_tab, services.files]);
+
+  useEffect(() => {
+    const cmd = commands.editorNotespaceFileSave.subscribe(handler);
+
+    return () => {
+      cmd.unsubscribe();
+    };
+  }, [handler]);
 
   return (
     <main

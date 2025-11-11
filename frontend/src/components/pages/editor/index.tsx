@@ -8,7 +8,7 @@ import { Sidebar } from "./sidebar";
 import { Textarea } from "./textarea";
 
 import { getServices } from "@/services";
-import { getCommandFromEvent } from "@/command";
+import { getCommandFromEvent } from "@/utils/command-helpers";
 
 import LogoIcon from "~/images/logo-icon.svg?react";
 
@@ -32,7 +32,7 @@ const EditorContent = () => {
 
       if (command) {
         e.preventDefault();
-        command.handler({ state, setState, services });
+        command.emit();
       }
     };
 

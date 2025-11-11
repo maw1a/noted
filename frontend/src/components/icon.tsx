@@ -8,7 +8,7 @@ export const Icon = ({ name, ...props }: LucideProps & { name: IconName }) => {
   return <LucideIcon {...props} />;
 };
 
-export const KeyIcon = ({ name }: { name: Keys | string }) => {
+export const KeyIcon = ({ name }: { name: Keys | (string & {}) }) => {
   if (!(name in keySymbolMap)) {
     return (
       <span

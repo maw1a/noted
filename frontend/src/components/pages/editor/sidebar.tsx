@@ -1,8 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useStore } from "@/components/store";
 import { IconButton } from "@/components/ui/button";
 import { cn } from "@/utils/cn";
 import { TabList } from "./tablist";
+import { disableWhenDialog } from "@/utils/command-helpers";
+import { commands } from "@/command";
 
 export const Sidebar = () => {
   const { state, setState } = useStore();
@@ -10,6 +12,18 @@ export const Sidebar = () => {
   const toggleSidebar = useCallback(() => {
     setState("sidebar", !state.sidebar);
   }, [state.sidebar, setState]);
+
+  const handler = useCallback(() => {
+    setState(disableWhenDialog(state, { ...state, sidebar: !state.sidebar }));
+  }, [state]);
+
+  useEffect(() => {
+    const cmd = commands.editorSidebarToggle.subscribe(handler);
+
+    return () => {
+      cmd.unsubscribe();
+    };
+  }, [handler]);
 
   return (
     <aside

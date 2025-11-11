@@ -1,4 +1,5 @@
 import React, {
+  ComponentProps,
   createContext,
   FC,
   forwardRef,
@@ -11,14 +12,122 @@ import React, {
   useState,
 } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import * as Portal from "@radix-ui/react-portal";
 
-import { cn } from "../../utils/cn";
 import { Button } from "./button";
 import { ScrollArea } from "./scroll-area";
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuShortcut,
+} from "./context-menu";
 import { ExactLink } from "../link";
-import { Triangle } from "../icon";
+import { KeyIcon, Triangle } from "../icon";
+
+import { cn } from "@/utils/cn";
 import { getKeyCombination } from "@/utils/key-combination";
+
+export interface INewFileNode {
+  createNew: (type: NodeType) => void;
+}
+
+export enum NodeType {
+  File = "file",
+  Dir = "dir",
+  Symlink = "symlink",
+}
+
+export const NewFileNode: FC<{
+  ref: Ref<INewFileNode>;
+  dir: string;
+}> = ({ ref }) => {
+  const [newNode, setNewNode] = useState<{
+    type: NodeType;
+    path: string;
+  } | null>(null);
+  const localRef = useRef<HTMLInputElement>(null!);
+
+  useImperativeHandle(ref, () => ({
+    createNew: (type: NodeType) => {
+      setNewNode({ type, path: "" });
+    },
+  }));
+
+  useEffect(() => {
+    if (newNode) localRef.current?.focus();
+
+    const onBlur = () => {
+      setNewNode(null);
+    };
+
+    localRef.current?.addEventListener("blur", onBlur);
+
+    return () => {
+      localRef.current?.removeEventListener("blur", onBlur);
+    };
+  }, [newNode]);
+
+  if (newNode)
+    return (
+      <div className="flex items-center justify-start w-full gap-2">
+        {newNode.type === NodeType.Dir && (
+          <div className="size-3 text-text-muted flex items-center justify-center -rotate-90">
+            <Triangle className="scale-150" />
+          </div>
+        )}
+        <input
+          ref={localRef}
+          id="new-filenode"
+          type="text"
+          className="px-1.5 py-1 text-display rounded-md"
+          placeholder={
+            newNode.type === "file" ? "File name..." : "Folder name..."
+          }
+          onChange={(e) =>
+            setNewNode((p) => (p ? { ...p, path: e.target.value } : p))
+          }
+          onKeyDown={(e) => {
+            const { keyCombination } = getKeyCombination(e);
+            if (keyCombination === "Escape") {
+              e.currentTarget.blur();
+            }
+            if (keyCombination === "Enter") {
+              // Create file
+            }
+          }}
+        />
+      </div>
+    );
+  return null;
+};
+
+function FileContextMenu({
+  onClose,
+  value,
+  items,
+}: {
+  value: ContextMenu | undefined;
+  onClose: () => void;
+  items: Array<{
+    label: string;
+    shortcut: Array<ComponentProps<typeof KeyIcon>["name"]>;
+    handler: () => void;
+  }>;
+}) {
+  return (
+    <ContextMenu value={value} onClose={onClose}>
+      {items.map((item) => (
+        <ContextMenuItem key={item.label} onClick={item.handler}>
+          {item.label}{" "}
+          <ContextMenuShortcut>
+            {item.shortcut.map((key) => (
+              <KeyIcon key={key} name={key} />
+            ))}
+          </ContextMenuShortcut>
+        </ContextMenuItem>
+      ))}
+    </ContextMenu>
+  );
+}
 
 type TreeViewElement = {
   id: string;
@@ -32,9 +141,7 @@ type ContextMenu = { id: string; x: number; y: number };
 type TreeContextProps = {
   selectedId: string | undefined;
   expandedItems: string[] | undefined;
-  contextMenu: ContextMenu | undefined;
   indicator: boolean;
-  handleContextMenu: (args: ContextMenu | undefined) => void;
   handleExpand: (id: string) => void;
   selectItem: (id: string) => void;
   setExpandedItems?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
@@ -86,10 +193,6 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
     const [expandedItems, setExpandedItems] = useState<string[] | undefined>(
       initialExpandedItems,
     );
-    const [contextMenu, setContextMenu] = useState<ContextMenu | undefined>(
-      undefined,
-    );
-    const menuRef = useRef<HTMLDivElement>(null!);
 
     const selectItem = useCallback((id: string) => {
       setSelectedId(id);
@@ -102,10 +205,6 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
         }
         return [...(prev ?? []), id];
       });
-    }, []);
-
-    const handleContextMenu = useCallback((args: ContextMenu | undefined) => {
-      setContextMenu(args);
     }, []);
 
     const expandSpecificTargetedElements = useCallback(
@@ -151,20 +250,6 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
       }
     }, [initialSelectedId, elements]);
 
-    useEffect(() => {
-      const handleClickOutside = (e: MouseEvent) => {
-        if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-          setContextMenu(undefined);
-        }
-      };
-
-      if (contextMenu) {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () =>
-          document.removeEventListener("mousedown", handleClickOutside);
-      }
-    }, [contextMenu]);
-
     const direction = dir === "rtl" ? "rtl" : "ltr";
 
     return (
@@ -172,9 +257,7 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
         value={{
           selectedId,
           expandedItems,
-          contextMenu,
           handleExpand,
-          handleContextMenu,
           selectItem,
           setExpandedItems,
           indicator,
@@ -203,20 +286,6 @@ const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
               {children}
             </AccordionPrimitive.Root>
           </ScrollArea>
-          {contextMenu && (
-            <Portal.Root>
-              <div
-                ref={menuRef}
-                className="fixed z-50 min-w-56 bg-dark-tint backdrop-blur-xs rounded-sm shadow-md py-1 animate-in fade-in-0 zoom-in-95"
-                style={{
-                  top: `${contextMenu.y}px`,
-                  left: `${contextMenu.x}px`,
-                }}
-              >
-                Context Menu
-              </div>
-            </Portal.Root>
-          )}
         </div>
       </TreeContext.Provider>
     );
@@ -272,66 +341,94 @@ const Folder = forwardRef<
     const {
       direction,
       handleExpand,
-      handleContextMenu,
       expandedItems,
       indicator,
       setExpandedItems,
     } = useTree();
-    const newFileNodeRef = useRef<INewFileNode>(null!);
+    const [contextMenu, setContextMenu] = useState<ContextMenu | undefined>(
+      undefined,
+    );
+    const newFileNodeRef = useRef<INewFileNode>(null);
+    const items: ComponentProps<typeof FileContextMenu>["items"] = [
+      {
+        label: "New File",
+        shortcut: ["Meta", "N"],
+        handler: () => {
+          newFileNodeRef.current?.createNew(NodeType.File);
+          setContextMenu(undefined);
+        },
+      },
+      {
+        label: "New Folder",
+        shortcut: ["Alt", "Meta", "N"],
+        handler: () => {
+          newFileNodeRef.current?.createNew(NodeType.Dir);
+          setContextMenu(undefined);
+        },
+      },
+    ];
 
     return (
-      <AccordionPrimitive.Item
-        {...props}
-        value={value}
-        className="relative h-full overflow-hidden"
-      >
-        <AccordionPrimitive.Trigger
-          className={cn(
-            `flex items-center rounded-md text-display w-full gap-2`,
-            className,
-            isSelect && isSelectable
-              ? "bg-surface-muted text-text rounded-md"
-              : "text-text-muted hover:text-text",
-            {
-              "cursor-pointer": isSelectable,
-              "cursor-not-allowed opacity-50": !isSelectable,
-            },
-          )}
-          disabled={!isSelectable}
-          onContextMenu={(e) =>
-            handleContextMenu({ x: e.clientX, y: e.clientY, id: value })
-          }
-          onClick={() => handleExpand(value)}
+      <>
+        <AccordionPrimitive.Item
+          {...props}
+          value={value}
+          className="relative h-full overflow-hidden"
         >
-          <div
+          <AccordionPrimitive.Trigger
             className={cn(
-              "size-3 flex items-center justify-center transition-transform",
-              !expandedItems?.includes(value) && "-rotate-90",
+              `flex items-center rounded-md text-display w-full gap-2`,
+              className,
+              isSelect && isSelectable
+                ? "bg-surface-muted text-text rounded-md"
+                : "text-text-muted hover:text-text",
+              {
+                "cursor-pointer": isSelectable,
+                "cursor-not-allowed opacity-50": !isSelectable,
+              },
             )}
-          >
-            <Triangle className="scale-150" />
-          </div>
-          <div className="py-1 px-1.5 flex items-center justify-start gap-1">
-            {element}
-          </div>
-        </AccordionPrimitive.Trigger>
-        <AccordionPrimitive.Content className="relative h-full overflow-hidden text-display">
-          {element && indicator && <TreeIndicator aria-hidden="true" />}
-          <AccordionPrimitive.Root
-            dir={direction}
-            type="multiple"
-            className="ml-5 flex flex-col rtl:mr-5"
-            defaultValue={expandedItems}
-            value={expandedItems}
-            onValueChange={(value) => {
-              setExpandedItems?.((prev) => [...(prev ?? []), value[0]]);
+            disabled={!isSelectable}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setContextMenu({ x: e.clientX, y: e.clientY, id: value });
             }}
+            onClick={() => handleExpand(value)}
           >
-            {children}
-            <NewFileNode ref={newFileNodeRef} dir={value} />
-          </AccordionPrimitive.Root>
-        </AccordionPrimitive.Content>
-      </AccordionPrimitive.Item>
+            <div
+              className={cn(
+                "size-3 flex items-center justify-center transition-transform",
+                !expandedItems?.includes(value) && "-rotate-90",
+              )}
+            >
+              <Triangle className="scale-150" />
+            </div>
+            <div className="py-1 px-1.5 flex items-center justify-start gap-1">
+              {element}
+            </div>
+          </AccordionPrimitive.Trigger>
+          <AccordionPrimitive.Content className="relative h-full overflow-hidden text-display">
+            {element && indicator && <TreeIndicator aria-hidden="true" />}
+            <AccordionPrimitive.Root
+              dir={direction}
+              type="multiple"
+              className="ml-5 flex flex-col rtl:mr-5"
+              defaultValue={expandedItems}
+              value={expandedItems}
+              onValueChange={(value) => {
+                setExpandedItems?.((prev) => [...(prev ?? []), value[0]]);
+              }}
+            >
+              <NewFileNode ref={newFileNodeRef} dir={value} />
+              {children}
+            </AccordionPrimitive.Root>
+          </AccordionPrimitive.Content>
+        </AccordionPrimitive.Item>
+        <FileContextMenu
+          items={items}
+          value={contextMenu}
+          onClose={() => setContextMenu(undefined)}
+        />
+      </>
     );
   },
 );
@@ -352,7 +449,7 @@ const File = forwardRef<
       ref={ref}
       className={({ isActive }) =>
         cn(
-          "flex w-full items-center text-display py-0.5 pr-1 cursor-pointer",
+          "flex w-full items-center text-display pr-1 cursor-pointer",
           direction === "rtl" ? "rtl" : "ltr",
           isActive ? "text-text" : "text-text-muted hover:text-text",
           className,
@@ -361,12 +458,13 @@ const File = forwardRef<
       onClick={() => {
         handleSelect?.(value);
       }}
+      onContextMenu={(e) => e.preventDefault()}
       {...props}
     >
       {({ isActive }) => (
         <div
           className={cn(
-            "flex w-fit gap-1 items-center justify-start rounded-md px-1.5 py-0.5",
+            "flex w-fit gap-1 items-center justify-start rounded-md px-1.5 py-1",
             isActive && "bg-surface-muted",
           )}
         >
@@ -430,74 +528,5 @@ const CollapseButton = forwardRef<
 });
 
 CollapseButton.displayName = "CollapseButton";
-
-export interface INewFileNode {
-  createNew: (type: NodeType) => void;
-}
-
-export enum NodeType {
-  File = "file",
-  Dir = "dir",
-  Symlink = "symlink",
-}
-
-export const NewFileNode: FC<{
-  ref: Ref<INewFileNode>;
-  dir: string;
-}> = ({ ref }) => {
-  const [newNode, setNewNode] = useState<{
-    type: NodeType;
-    path: string;
-  } | null>(null);
-  const localRef = useRef<HTMLInputElement>(null!);
-
-  useImperativeHandle(ref, () => ({
-    createNew: (type: NodeType) => {
-      setNewNode({ type, path: "" });
-    },
-  }));
-
-  useEffect(() => {
-    if (newNode) localRef.current?.focus();
-
-    const onBlur = () => {
-      setNewNode(null);
-    };
-
-    localRef.current?.addEventListener("blur", onBlur);
-
-    return () => {
-      localRef.current?.removeEventListener("blur", onBlur);
-    };
-  }, [newNode]);
-
-  if (newNode)
-    return (
-      <div className="flex items-center justify-start w-full gap-2">
-        <div className="size-3 text-text-muted flex items-center justify-center -rotate-90">
-          {newNode.type === NodeType.Dir && <Triangle className="scale-150" />}
-        </div>
-        <input
-          ref={localRef}
-          id="new-filenode"
-          type="text"
-          className="px-1.5 py-1 text-display rounded-md"
-          placeholder={
-            newNode.type === "file" ? "File name..." : "Folder name..."
-          }
-          onChange={(e) =>
-            setNewNode((p) => (p ? { ...p, path: e.target.value } : p))
-          }
-          onKeyDown={(e) => {
-            const { keyCombination } = getKeyCombination(e);
-            if (keyCombination === "Escape") {
-              e.currentTarget.blur();
-            }
-          }}
-        />
-      </div>
-    );
-  return null;
-};
 
 export { CollapseButton, File, Folder, Tree, type TreeViewElement };

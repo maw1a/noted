@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { useStore } from "../store";
 import {
   CommandDialog,
@@ -9,7 +9,7 @@ import {
   CommandList,
   CommandShortcut,
 } from "../ui/command";
-import { commandList } from "@/command";
+import { commandList, commands } from "@/command";
 import { KeyIcon } from "../icon";
 
 export function CommandPalette({ children }: { children: ReactNode }) {
@@ -20,10 +20,27 @@ export function CommandPalette({ children }: { children: ReactNode }) {
     setState("dialog", value ? "cmd-palette" : null);
   };
 
-  const commands = useMemo(
+  const cmds = useMemo(
     () => commandList.filter((cmd) => cmd.isAvailable && cmd.isVisible),
     [],
   );
+
+  const handler = useCallback(
+    () =>
+      setState({
+        ...state,
+        dialog: state.dialog === "cmd-palette" ? null : "cmd-palette",
+      }),
+    [state],
+  );
+
+  useEffect(() => {
+    const cmd = commands.editorCommandPalette.subscribe(handler);
+
+    return () => {
+      cmd.unsubscribe();
+    };
+  }, [handler]);
 
   return (
     <CommandDialog
@@ -37,8 +54,14 @@ export function CommandPalette({ children }: { children: ReactNode }) {
       <CommandEmpty>No matches</CommandEmpty>
       <CommandList>
         <CommandGroup>
-          {commands.map((command) => (
-            <CommandItem key={command.id}>
+          {cmds.map((command) => (
+            <CommandItem
+              key={command.id}
+              onSelect={() => {
+                setOpen(false);
+                setTimeout(() => command.emit());
+              }}
+            >
               <span>{command.label}</span>
               <CommandShortcut>
                 {command.shortcut.map((key) => (

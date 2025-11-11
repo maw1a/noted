@@ -7,16 +7,17 @@ import { type FileInfo, FileService } from "@/services";
 import { Editor } from "./editor";
 
 import LogoAltIcon from "~/images/logo-alt-icon.svg?react";
+import { getCommandShortcutNode } from "@/utils/command-helpers";
 
 const EmptyContent = () => (
   <div className="w-full h-full flex items-center justify-center">
     <div className="flex flex-col items-center gap-12 mb-16">
       <LogoAltIcon className="size-36 text-dark/70" />
       <div className="mt-8 text-sm space-y-4 flex flex-col items-start text-text-muted">
-        {commands.editorCommandPalette.Node()}
-        {commands.editorNotespaceFileOpen.Node()}
-        {commands.editorNotespaceFind.Node()}
-        {commands.editorSettings.Node()}
+        {getCommandShortcutNode({ command: commands.editorCommandPalette })}
+        {getCommandShortcutNode({ command: commands.editorNotespaceFileOpen })}
+        {getCommandShortcutNode({ command: commands.editorNotespaceFind })}
+        {getCommandShortcutNode({ command: commands.editorSettings })}
       </div>
     </div>
   </div>
